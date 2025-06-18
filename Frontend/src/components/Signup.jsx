@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 
 function Signup() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -15,7 +16,7 @@ function Signup() {
         { name, email, password },
         { withCredentials: true }
       );
-      alert(res.data.message); // You can route to login here
+      navigate('/')
     } catch (error) {
       alert(error.response?.data?.message || "Signup failed");
     }

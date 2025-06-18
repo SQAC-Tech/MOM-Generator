@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
+import { useNavigate } from 'react-router-dom';
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -13,7 +14,7 @@ function Login() {
         { email, password },
         { withCredentials: true }
       );
-      alert(res.data.message); // You can route to dashboard here
+      navigate('/') 
     } catch (error) {
       alert(error.response?.data?.message || "Login failed");
     }
@@ -56,7 +57,6 @@ function Login() {
             Log In
           </button>
         </form>
-
         <p className="mt-4 text-center text-sm text-gray-600">
           Don't have an account? <a href="/signup" className="text-pink-500 hover:underline">Sign up</a>
         </p>
