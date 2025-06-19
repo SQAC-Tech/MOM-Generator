@@ -1,7 +1,9 @@
 import React, { use } from "react";
 import { useState } from "react";
 import { Autocomplete, TextField } from "@mui/material";
-import peopleData from "../../people.json"
+import peopleData from "../../people.json";
+import axios from "axios";
+
 
 function MOMForm() {
   const [date, setDate] = useState('');
@@ -11,6 +13,29 @@ function MOMForm() {
   const [discussion, setDiscussion] = useState('');
   const [attendees, setAttendees] = useState([]);
   const discussionPoints = discussion.split('\n');
+
+const handleSubmit = async () => {
+  try {
+    const response = await axios.post("http://localhost:3000/mom", {
+      date,
+      time,
+      mode,
+      agenda
+    });
+
+    if (response.data.success) {
+      alert("MOM submitted successfully!");
+
+    } else {
+      alert("Failed to submit MOM.");
+    }
+
+  } catch (err) {
+    console.error("API Error:", err);
+    alert("Error submitting MOM: " + err.message);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-300 via-purple-300 to-indigo-400 flex items-center justify-center py-10">
@@ -127,7 +152,8 @@ function MOMForm() {
 
 
         <button
-          type="submit"
+          type="button"
+          onClick={handleSubmit}
           className="w-full bg-purple-400 text-white font-semibold py-2 rounded-lg"
         >Submit and Download PDF
         </button>
