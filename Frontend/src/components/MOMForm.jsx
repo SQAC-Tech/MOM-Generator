@@ -1,51 +1,61 @@
 import React, { use } from "react";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import peopleData from "../../people.json";
 import axios from "axios";
 
-
 function MOMForm() {
-  const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
-  const [mode, setMode] = useState('');
-  const [agenda, setAgenda] = useState('');
-  const [discussion, setDiscussion] = useState('');
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [mode, setMode] = useState("");
+  const [agenda, setAgenda] = useState("");
+  const [discussion, setDiscussion] = useState("");
   const [attendees, setAttendees] = useState([]);
-  const discussionPoints = discussion.split('\n');
+  const discussionPoints = discussion.split("\n");
+  const navigate = useNavigate();
 
-const handleSubmit = async () => {
-  try {
-    const response = await axios.post("http://localhost:3000/mom", {
-      date,
-      time,
-      mode,
-      agenda
-    });
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post("http://localhost:3000/mom", {
+        date,
+        time,
+        mode,
+        agenda,
+      });
 
-    if (response.data.success) {
-      alert("MOM submitted successfully!");
-
-    } else {
-      alert("Failed to submit MOM.");
+      if (response.data.success) {
+        alert("MOM submitted successfully!");
+      } else {
+        alert("Failed to submit MOM.");
+      }
+    } catch (err) {
+      console.error("API Error:", err);
+      alert("Error submitting MOM: " + err.message);
     }
-
-  } catch (err) {
-    console.error("API Error:", err);
-    alert("Error submitting MOM: " + err.message);
-  }
-};
-
+  };
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    navigate("/login");
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-300 via-purple-300 to-indigo-400 flex items-center justify-center py-10">
       <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-4xl">
-        <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">Minutes of the Meeting</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
+          Minutes of the Meeting
+        </h1>
 
         <div className="mb-6">
-          <label htmlFor="date" className="block mb-1 text-sm font-medium text-gray-700">Date</label>
+          <label
+            htmlFor="date"
+            className="block mb-1 text-sm font-medium text-gray-700"
+          >
+            Date
+          </label>
           <input
-            type="date" id="date"
+            type="date"
+            id="date"
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
             onChange={(e) => setDate(e.target.value)}
             value={date}
@@ -53,7 +63,12 @@ const handleSubmit = async () => {
         </div>
 
         <div className="mb-6">
-          <label htmlFor="Time" className="block mb-1 text-sm font-medium text-gray-700">Time</label>
+          <label
+            htmlFor="Time"
+            className="block mb-1 text-sm font-medium text-gray-700"
+          >
+            Time
+          </label>
           <input
             type="text"
             id="time"
@@ -65,7 +80,12 @@ const handleSubmit = async () => {
         </div>
 
         <div className="mb-6">
-          <label htmlFor="Mode" className="block mb-1 text-sm font-medium text-gray-700">Mode</label>
+          <label
+            htmlFor="Mode"
+            className="block mb-1 text-sm font-medium text-gray-700"
+          >
+            Mode
+          </label>
           <select
             id="mode"
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
@@ -79,7 +99,10 @@ const handleSubmit = async () => {
         </div>
 
         <div className="mb-6">
-          <label htmlFor="attendees" className="block mb-1 text-sm font-medium text-gray-700">
+          <label
+            htmlFor="attendees"
+            className="block mb-1 text-sm font-medium text-gray-700"
+          >
             Attendees
           </label>
           <Autocomplete
@@ -101,20 +124,29 @@ const handleSubmit = async () => {
 
         {attendees.length > 0 && (
           <div className="mt-4">
-            <h3 className="text-md font-semibold text-gray-800 mb-2">Attendees:</h3>
+            <h3 className="text-md font-semibold text-gray-800 mb-2">
+              Attendees:
+            </h3>
             <ol className="list-decimal pl-6 text-gray-700">
               {attendees
                 .map((person) => person.name.trim())
                 .sort((a, b) => a.localeCompare(b))
                 .map((name, index) => (
-                  <li key={index} className="break-words">{name}</li>
+                  <li key={index} className="break-words">
+                    {name}
+                  </li>
                 ))}
             </ol>
           </div>
         )}
 
         <div className="mb-6">
-          <label htmlFor="Agenda" className="block mb-1 text-sm font-medium text-gray-700">Agenda</label>
+          <label
+            htmlFor="Agenda"
+            className="block mb-1 text-sm font-medium text-gray-700"
+          >
+            Agenda
+          </label>
           <input
             type="text"
             id="agenda"
@@ -126,7 +158,10 @@ const handleSubmit = async () => {
         </div>
 
         <div className="mb-6">
-          <label htmlFor="Discussion" className="block mb-1 text-sm font-medium text-gray-700">
+          <label
+            htmlFor="Discussion"
+            className="block mb-1 text-sm font-medium text-gray-700"
+          >
             Discussion Points
           </label>
           <textarea
@@ -141,26 +176,36 @@ const handleSubmit = async () => {
 
         {discussion && (
           <div className="mb-6 mt-2">
-            <h3 className="text-md font-semibold text-gray-800 mb-2">Preview:</h3>
+            <h3 className="text-md font-semibold text-gray-800 mb-2">
+              Preview:
+            </h3>
             <ul className="list-disc pl-6 text-gray-700">
-              {discussion.split('\n').map((point, index) => (
-                <li key={index} className="break-words">{point}</li>
+              {discussion.split("\n").map((point, index) => (
+                <li key={index} className="break-words">
+                  {point}
+                </li>
               ))}
             </ul>
           </div>
         )}
 
-
         <button
           type="button"
           onClick={handleSubmit}
           className="w-full bg-purple-400 text-white font-semibold py-2 rounded-lg"
-        >Submit and Download PDF
+        >
+          Submit and Download PDF
         </button>
-
+      </div>
+      <div className="absolute top-4 right-4">
+        <button
+          onClick={handleLogout}
+          className="bg-red-600 hover:bg-red-700 text-white px-6 py-2  rounded-lg text-md font-bold transition-all duration-300 cursor-pointer "
+        >
+          Logout
+        </button>
       </div>
     </div>
-
   );
 }
 
