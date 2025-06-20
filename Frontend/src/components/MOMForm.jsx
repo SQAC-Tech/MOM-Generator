@@ -1,5 +1,7 @@
 import React, { use } from "react";
 import { useState } from "react";
+import { Autocomplete, TextField, Chip } from "@mui/material";
+
 
 function MOMForm() { 
      const [date, setDate] = useState('');
@@ -10,6 +12,16 @@ function MOMForm() {
      const [attendees, setAttendees] = useState('');
      const discussionPoints = discussion.split('\n');
 
+const [attendeesList, setAttendeesList] = useState([]);
+const [inputValue, setInputValue] = useState('');
+const attendeeOptions = [
+  "Amit Kumar",
+  "Anjali Sharma",
+  "Bharat Singh",
+  "Divya Raj",
+  "Ishaan Jain",
+  "Priya Mehta",
+].sort((a, b) => a.localeCompare(b));
 
     return (
     <div className="min-h-screen bg-gradient-to-b from-pink-300 via-purple-300 to-indigo-400 flex items-center justify-center">
@@ -19,8 +31,10 @@ function MOMForm() {
         <div className="mb-6">
             <label htmlFor="date" className="block mb-1 text-sm font-medium text-gray-700">Date</label>
             <input
-              type="date"              id="date"
+              type="date"
+              id="date"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              t
               onChange={(e) => setDate(e.target.value)}
               value={date}
             />
@@ -52,35 +66,42 @@ function MOMForm() {
                 </select>
           </div>
 
-          <div className="mb-6">
-  <label htmlFor="attendees" className="block mb-1 text-sm font-medium text-gray-700">
-    Attendees
-  </label>
-  <textarea
-    id="attendees"
-    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-    placeholder="Enter names, one per line"
-    rows="4"
-    onChange={(e) => setAttendees(e.target.value)}
-    value={attendees}
+        <div className="mb-6">
+  <label className="block mb-1 text-sm font-medium text-gray-700">Select Attendees</label>
+  <Autocomplete
+    options={attendeeOptions}
+    getOptionLabel={(option) => option}
+    value={null}
+    inputValue={inputValue}
+    onInputChange={(event, newInputValue) => {
+      setInputValue(newInputValue);
+    }}
+    onChange={(event, newValue) => {
+      if (newValue && !attendeesList.includes(newValue)) {
+        setAttendeesList([...attendeesList, newValue]);
+      }
+      setInputValue(""); // clear after select
+    }}
+    renderInput={(params) => (
+      <TextField {...params} placeholder="Type a name..." fullWidth />
+    )}
+    freeSolo
   />
+
+  {/* Show selected attendees as chips */}
+  <div className="mt-4 flex flex-wrap gap-2">
+    {attendeesList.map((name, index) => (
+      <Chip
+        key={index}
+        label={name}
+        onDelete={() => {
+          setAttendeesList(attendeesList.filter((n) => n !== name));
+        }}
+      />
+    ))}
+  </div>
 </div>
 
-            {attendees && (
-  <div className="mt-4">
-    <h3 className="text-md font-semibold text-gray-800 mb-2">Attendees:</h3>
-    <ol className="list-decimal pl-6 text-gray-700">
-      {attendees
-        .split("\n")
-        .map(name => name.trim())
-        .filter(name => name !== "")
-        .sort((a, b) => a.localeCompare(b))
-        .map((name, index) => (
-          <li key={index} className="break-words">{name}</li>
-        ))}
-    </ol>
-  </div>
-)}
 
 
 
