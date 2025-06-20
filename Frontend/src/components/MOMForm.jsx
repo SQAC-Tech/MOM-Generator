@@ -251,7 +251,7 @@ function MOMForm() {
           </div>
         )}
 
-        <div className="mb-6">
+        <div className="mt-6 mb-6">
           <label htmlFor="agenda" className="block mb-1 text-sm font-medium text-gray-700">
             Agenda
           </label>
@@ -293,7 +293,11 @@ function MOMForm() {
         <button
           type="button"
           onClick={generatePDFBlob}
-          className="w-full mb-3 bg-pink-400 hover:bg-pink-600 text-white font-semibold py-2 rounded-lg cursor-pointer"
+          disabled={!isFormValid}
+          className={`w-full mb-3 ${isFormValid
+            ? "bg-pink-400 hover:bg-pink-600 cursor-pointer"
+            : "bg-gray-300 cursor-not-allowed"
+            } text-white font-semibold py-2 rounded-lg transition-all duration-300`}
         >
           Preview PDF
         </button>
@@ -302,14 +306,14 @@ function MOMForm() {
           type="button"
           onClick={handleSubmit}
           disabled={!isFormValid}
-          className={`w-full ${
-            isFormValid
-              ? "bg-purple-400 hover:bg-purple-500"
+          className={`w-full ${isFormValid
+              ? "bg-purple-400 hover:bg-purple-500 cursor-pointer"
               : "bg-gray-300 cursor-not-allowed"
-          } text-white font-semibold py-2 rounded-lg transition-all duration-300`}
+            } text-white font-semibold py-2 rounded-lg transition-all duration-300`}
         >
           Submit and Download PDF
         </button>
+
       </div>
 
       <div className="absolute top-4 right-4">
