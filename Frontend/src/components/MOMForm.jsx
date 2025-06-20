@@ -1,11 +1,9 @@
-import React, { use } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import peopleData from "../../people.json";
 import axios from "axios";
 import jsPDF from "jspdf";
-
 
 function MOMForm() {
   const [date, setDate] = useState("");
@@ -15,101 +13,98 @@ function MOMForm() {
   const [discussion, setDiscussion] = useState("");
   const [attendees, setAttendees] = useState([]);
   const [department, setDepartment] = useState(" ");
-  const discussionPoints = discussion.split("\n");
   const navigate = useNavigate();
 
-const handleSubmit = async () => {
-  try {
-    const response = await axios.post("http://localhost:3000/mom", {
-      date,
-      time,
-      mode,
-      agenda,
-      attendees: attendees.map((a) => a.name),
-      discussion,
-    });
+  const isFormValid =
+    date.trim() !== "" &&
+    time.trim() !== "" &&
+    mode.trim() !== "" &&
+    agenda.trim() !== "" &&
+    discussion.trim() !== "" &&
+    attendees.length > 0 &&
+    department.trim() !== "" &&
+    department.trim() !== " ";
 
-    if (response.data.success) {
-      alert("MOM submitted successfully!");
-      generatePDF();
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post("http://localhost:3000/mom", {
+        date,
+        time: time.trim(),
+        mode,
+        agenda: agenda.trim(),
+        attendees: attendees.map((a) => a.name),
+        discussion: discussion.trim(),
+      });
 
-      // Clear all form fields here
-      setDate("");
-      setTime("");
-      setMode("");
-      setAgenda("");
-      setDiscussion("");
-      setAttendees([]);
-      setDepartment(" ");
-    } else {
-      alert("Failed to submit MOM.");
+      if (response.data.success) {
+        alert("MOM submitted successfully!");
+        generatePDF();
+
+        // Clear all form fields
+        setDate("");
+        setTime("");
+        setMode("");
+        setAgenda("");
+        setDiscussion("");
+        setAttendees([]);
+        setDepartment(" ");
+      } else {
+        alert("Failed to submit MOM.");
+      }
+    } catch (err) {
+      console.error("API Error:", err);
+      alert("Error submitting MOM: " + err.message);
     }
-  } catch (err) {
-    console.error("API Error:", err);
-    alert("Error submitting MOM: " + err.message);
-  }
-};
-
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     navigate("/login");
   };
-  
- const generatePDF = async () => {
-  const doc = new jsPDF();
 
-  // Load image synchronously
-  const img = new Image();
-  img.src = "/SQAC.jpg";
+  const generatePDF = async () => {
+    const doc = new jsPDF();
 
-  await new Promise((resolve) => {
-    img.onload = resolve;
-  });
+    const img = new Image();
+    img.src = "/SQAC.jpg";
 
-  // Add logo (centered)
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const imgWidth = 50;
-  const imgX = (pageWidth - imgWidth) / 2;
- doc.addImage(img, "JPEG", imgX, 10, imgWidth, 25);
-
-  // Title
-  doc.setFontSize(18);
-  doc.text("Minutes of Meeting", pageWidth / 2, 45, { align: "center" });
-
-  // Info
-  doc.setFontSize(12);
-  doc.text(`Date: ${date}`, 20, 60);
-  doc.text(`Time: ${time}`, 20, 70);
-  doc.text(`Mode: ${mode}`, 20, 80);
-
-  // Attendees
-  doc.text("Attendees:", 20, 95);
-  attendees
-    .map((a) => a.name)
-    .sort()
-    .forEach((name, i) => {
-      doc.text(`• ${name}`, 25, 105 + i * 8);
+    await new Promise((resolve) => {
+      img.onload = resolve;
     });
 
-  // Agenda
-  const agendaStart = 105 + attendees.length * 8 + 10;
-  doc.text("Agenda:", 20, agendaStart);
-  doc.text(agenda, 25, agendaStart + 10);
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const imgWidth = 50;
+    const imgX = (pageWidth - imgWidth) / 2;
+    doc.addImage(img, "JPEG", imgX, 10, imgWidth, 25);
 
-  // Discussion Points
-  const discussionStart = agendaStart + 30;
-  doc.text("Discussion Points:", 20, discussionStart);
-  discussion.split("\n").forEach((point, i) => {
-    doc.text(`• ${point}`, 25, discussionStart + 10 + i * 8);
-  });
+    doc.setFontSize(18);
+    doc.text("Minutes of Meeting", pageWidth / 2, 45, { align: "center" });
 
-  // Save PDF
-  doc.save(`MOM_${date}.pdf`);
-};
+    doc.setFontSize(12);
+    doc.text(`Date: ${date}`, 20, 60);
+    doc.text(`Time: ${time}`, 20, 70);
+    doc.text(`Mode: ${mode}`, 20, 80);
 
+    doc.text("Attendees:", 20, 95);
+    attendees
+      .map((a) => a.name)
+      .sort()
+      .forEach((name, i) => {
+        doc.text(`• ${name}`, 25, 105 + i * 8);
+      });
 
+    const agendaStart = 105 + attendees.length * 8 + 10;
+    doc.text("Agenda:", 20, agendaStart);
+    doc.text(agenda, 25, agendaStart + 10);
 
+    const discussionStart = agendaStart + 30;
+    doc.text("Discussion Points:", 20, discussionStart);
+    discussion.split("\n").forEach((point, i) => {
+      doc.text(`• ${point}`, 25, discussionStart + 10 + i * 8);
+    });
+
+    doc.save(`MOM_${date}.pdf`);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-300 via-purple-300 to-indigo-400 flex items-center justify-center py-10">
@@ -119,8 +114,8 @@ const handleSubmit = async () => {
         </h1>
 
         <div className="mb-6">
-           <label
-            htmlFor="Domain type"
+          <label
+            htmlFor="Domain"
             className="block mb-1 text-sm font-medium text-gray-700"
           >
             Domain Type
@@ -132,18 +127,16 @@ const handleSubmit = async () => {
             value={department}
           >
             <option value=" ">Select your Domain</option>
-            <option value="Offline">All</option>
-            <option value="Online">Corporate</option>
-            <option value="Offline">Technical</option>
+            <option value="All">All</option>
+            <option value="Corporate">Corporate</option>
+            <option value="Technical">Technical</option>
           </select>
         </div>
-
-
 
         <div className="mb-6">
           <label
             htmlFor="date"
-            className="block mb-1 text-sm font-medium text-gray-700 opacity-0.7"
+            className="block mb-1 text-sm font-medium text-gray-700"
           >
             Date
           </label>
@@ -158,7 +151,7 @@ const handleSubmit = async () => {
 
         <div className="mb-6">
           <label
-            htmlFor="Time"
+            htmlFor="time"
             className="block mb-1 text-sm font-medium text-gray-700"
           >
             Time
@@ -167,7 +160,7 @@ const handleSubmit = async () => {
             type="text"
             id="time"
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            placeholder="Enter your start and end time (e.g. 10:00 AM - 11:00 AM)"
+            placeholder="Enter start and end time (e.g. 10:00 AM - 11:00 AM)"
             onChange={(e) => setTime(e.target.value)}
             value={time}
           />
@@ -175,7 +168,7 @@ const handleSubmit = async () => {
 
         <div className="mb-6">
           <label
-            htmlFor="Mode"
+            htmlFor="mode"
             className="block mb-1 text-sm font-medium text-gray-700"
           >
             Mode
@@ -236,7 +229,7 @@ const handleSubmit = async () => {
 
         <div className="mb-6">
           <label
-            htmlFor="Agenda"
+            htmlFor="agenda"
             className="block mb-1 text-sm font-medium text-gray-700"
           >
             Agenda
@@ -253,15 +246,15 @@ const handleSubmit = async () => {
 
         <div className="mb-6">
           <label
-            htmlFor="Discussion"
+            htmlFor="discussion"
             className="block mb-1 text-sm font-medium text-gray-700"
           >
             Discussion Points
           </label>
           <textarea
-            id="Discussion"
+            id="discussion"
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            placeholder="Enter the points discussed in the meeting (one per line)"
+            placeholder="Enter points discussed (one per line)"
             rows="4"
             onChange={(e) => setDiscussion(e.target.value)}
             value={discussion}
@@ -286,15 +279,21 @@ const handleSubmit = async () => {
         <button
           type="button"
           onClick={handleSubmit}
-          className="w-full bg-purple-400 text-white font-semibold py-2 rounded-lg"
+          disabled={!isFormValid}
+          className={`w-full ${
+            isFormValid
+              ? "bg-purple-400 hover:bg-purple-500"
+              : "bg-gray-300 cursor-not-allowed"
+          } text-white font-semibold py-2 rounded-lg transition-all duration-300`}
         >
           Submit and Download PDF
         </button>
       </div>
+
       <div className="absolute top-4 right-4">
         <button
           onClick={handleLogout}
-          className="bg-red-600 hover:bg-red-700 text-white px-6 py-2  rounded-lg text-md font-bold transition-all duration-300 cursor-pointer "
+          className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg text-md font-bold transition-all duration-300"
         >
           Logout
         </button>
