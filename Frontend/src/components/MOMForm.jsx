@@ -1,158 +1,274 @@
 import React, { use } from "react";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Autocomplete, TextField, Chip } from "@mui/material";
+import { Autocomplete, TextField } from "@mui/material";
+import peopleData from "../../people.json";
+import axios from "axios";
+import jsPDF from "jspdf";
 
 
-function MOMForm() { 
-     const [date, setDate] = useState('');
-     const [time, setTime] = useState('');
-     const [mode, setMode] = useState('');
-     const [agenda, setAgenda] = useState('');
-     const [discussion, setDiscussion] = useState('');
-     const [attendees, setAttendees] = useState('');
-     const discussionPoints = discussion.split('\n');
+function MOMForm() {
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [mode, setMode] = useState("");
+  const [agenda, setAgenda] = useState("");
+  const [discussion, setDiscussion] = useState("");
+  const [attendees, setAttendees] = useState([]);
+  const discussionPoints = discussion.split("\n");
+  const navigate = useNavigate();
 
-const [attendeesList, setAttendeesList] = useState([]);
-const [inputValue, setInputValue] = useState('');
-const attendeeOptions = [
-  "Amit Kumar",
-  "Anjali Sharma",
-  "Bharat Singh",
-  "Divya Raj",
-  "Ishaan Jain",
-  "Priya Mehta",
-].sort((a, b) => a.localeCompare(b));
+const handleSubmit = async () => {
+  try {
+    const response = await axios.post("http://localhost:3000/mom", {
+      date,
+      time,
+      mode,
+      agenda,
+      attendees: attendees.map((a) => a.name),
+      discussion,
+    });
 
-    return (
-    <div className="min-h-screen bg-gradient-to-b from-pink-300 via-purple-300 to-indigo-400 flex items-center justify-center">
+    if (response.data.success) {
+      alert("MOM submitted successfully!");
+      generatePDF(); // ✅ Download the PDF
+    } else {
+      alert("Failed to submit MOM.");
+    }
+  } catch (err) {
+    console.error("API Error:", err);
+    alert("Error submitting MOM: " + err.message);
+  }
+};
+
+
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    navigate("/login");
+  };
+  
+ const generatePDF = async () => {
+  const doc = new jsPDF();
+
+  // Load image synchronously
+  const img = new Image();
+  img.src = "/SQAC.jpg";
+
+  await new Promise((resolve) => {
+    img.onload = resolve;
+  });
+
+  // Add logo (centered)
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const imgWidth = 50;
+  const imgX = (pageWidth - imgWidth) / 2;
+ doc.addImage(img, "JPEG", imgX, 10, imgWidth, 25);
+
+  // Title
+  doc.setFontSize(18);
+  doc.text("Minutes of Meeting", pageWidth / 2, 45, { align: "center" });
+
+  // Info
+  doc.setFontSize(12);
+  doc.text(`Date: ${date}`, 20, 60);
+  doc.text(`Time: ${time}`, 20, 70);
+  doc.text(`Mode: ${mode}`, 20, 80);
+
+  // Attendees
+  doc.text("Attendees:", 20, 95);
+  attendees
+    .map((a) => a.name)
+    .sort()
+    .forEach((name, i) => {
+      doc.text(`• ${name}`, 25, 105 + i * 8);
+    });
+
+  // Agenda
+  const agendaStart = 105 + attendees.length * 8 + 10;
+  doc.text("Agenda:", 20, agendaStart);
+  doc.text(agenda, 25, agendaStart + 10);
+
+  // Discussion Points
+  const discussionStart = agendaStart + 30;
+  doc.text("Discussion Points:", 20, discussionStart);
+  discussion.split("\n").forEach((point, i) => {
+    doc.text(`• ${point}`, 25, discussionStart + 10 + i * 8);
+  });
+
+  // Save PDF
+  doc.save(`MOM_${date}.pdf`);
+};
+
+
+
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-pink-300 via-purple-300 to-indigo-400 flex items-center justify-center py-10">
       <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-4xl">
-        <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">Minutes of the Meeting</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
+          Minutes of the Meeting
+        </h1>
 
         <div className="mb-6">
-            <label htmlFor="date" className="block mb-1 text-sm font-medium text-gray-700">Date</label>
-            <input
-              type="date"
-              id="date"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-              t
-              onChange={(e) => setDate(e.target.value)}
-              value={date}
-            />
-          </div>
-
-          <div className="mb-6">
-            <label htmlFor="Time" className="block mb-1 text-sm font-medium text-gray-700">Time</label>
-            <input
-              type="text"
-              id="time"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-              placeholder="Enter your start and end time (e.g. 10:00 AM - 11:00 AM)"
-              onChange={(e) => setTime(e.target.value)}
-              value={time}
-            />
-          </div>
-
-          <div className="mb-6">
-            <label htmlFor="Mode" className="block mb-1 text-sm font-medium text-gray-700">Mode</label>
-              <select
-              id="mode"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-              onChange={(e) => setMode(e.target.value)}
-              value={mode}
-            >
-                <option value=" ">Select Mode</option>
-                <option value="Online">Online</option>
-                <option value="Offline">Offline</option>
-                </select>
-          </div>
+          <label
+            htmlFor="date"
+            className="block mb-1 text-sm font-medium text-gray-700"
+          >
+            Date
+          </label>
+          <input
+            type="date"
+            id="date"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            onChange={(e) => setDate(e.target.value)}
+            value={date}
+          />
+        </div>
 
         <div className="mb-6">
-  <label className="block mb-1 text-sm font-medium text-gray-700">Select Attendees</label>
-  <Autocomplete
-    options={attendeeOptions}
-    getOptionLabel={(option) => option}
-    value={null}
-    inputValue={inputValue}
-    onInputChange={(event, newInputValue) => {
-      setInputValue(newInputValue);
-    }}
-    onChange={(event, newValue) => {
-      if (newValue && !attendeesList.includes(newValue)) {
-        setAttendeesList([...attendeesList, newValue]);
-      }
-      setInputValue(""); // clear after select
-    }}
-    renderInput={(params) => (
-      <TextField {...params} placeholder="Type a name..." fullWidth />
-    )}
-    freeSolo
-  />
+          <label
+            htmlFor="Time"
+            className="block mb-1 text-sm font-medium text-gray-700"
+          >
+            Time
+          </label>
+          <input
+            type="text"
+            id="time"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            placeholder="Enter your start and end time (e.g. 10:00 AM - 11:00 AM)"
+            onChange={(e) => setTime(e.target.value)}
+            value={time}
+          />
+        </div>
 
-  {/* Show selected attendees as chips */}
-  <div className="mt-4 flex flex-wrap gap-2">
-    {attendeesList.map((name, index) => (
-      <Chip
-        key={index}
-        label={name}
-        onDelete={() => {
-          setAttendeesList(attendeesList.filter((n) => n !== name));
-        }}
-      />
-    ))}
-  </div>
-</div>
+        <div className="mb-6">
+          <label
+            htmlFor="Mode"
+            className="block mb-1 text-sm font-medium text-gray-700"
+          >
+            Mode
+          </label>
+          <select
+            id="mode"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            onChange={(e) => setMode(e.target.value)}
+            value={mode}
+          >
+            <option value=" ">Select Mode</option>
+            <option value="Online">Online</option>
+            <option value="Offline">Offline</option>
+          </select>
+        </div>
 
+        <div className="mb-6">
+          <label
+            htmlFor="attendees"
+            className="block mb-1 text-sm font-medium text-gray-700"
+          >
+            Attendees
+          </label>
+          <Autocomplete
+            multiple
+            id="attendees"
+            options={peopleData}
+            getOptionLabel={(option) => option.name}
+            value={attendees}
+            onChange={(event, newValue) => setAttendees(newValue)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                placeholder="Select attendees"
+                className="bg-white"
+              />
+            )}
+          />
+        </div>
 
-
-
-          <div className="mb-6">
-            <label htmlFor="Agenda" className="block mb-1 text-sm font-medium text-gray-700">Agenda</label>
-            <input
-                type="text"
-                id="agenda"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                placeholder="Enter the agenda of the meeting"
-                onChange={(e) => setAgenda(e.target.value)}
-                value={agenda}
-            />
+        {attendees.length > 0 && (
+          <div className="mt-4">
+            <h3 className="text-md font-semibold text-gray-800 mb-2">
+              Attendees:
+            </h3>
+            <ol className="list-decimal pl-6 text-gray-700">
+              {attendees
+                .map((person) => person.name.trim())
+                .sort((a, b) => a.localeCompare(b))
+                .map((name, index) => (
+                  <li key={index} className="break-words">
+                    {name}
+                  </li>
+                ))}
+            </ol>
           </div>
+        )}
 
-          <div className="mb-6">
-  <label htmlFor="Discussion" className="block mb-1 text-sm font-medium text-gray-700">
-    Discussion Points
-  </label>
-  <textarea
-    id="Discussion"
-    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-    placeholder="Enter the points discussed in the meeting (one per line)"
-    rows="4"
-    onChange={(e) => setDiscussion(e.target.value)}
-    value={discussion}
-  />
-</div>
+        <div className="mb-6">
+          <label
+            htmlFor="Agenda"
+            className="block mb-1 text-sm font-medium text-gray-700"
+          >
+            Agenda
+          </label>
+          <input
+            type="text"
+            id="agenda"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            placeholder="Enter the agenda of the meeting"
+            onChange={(e) => setAgenda(e.target.value)}
+            value={agenda}
+          />
+        </div>
 
-{discussion && (
-  <div className="mb-6 mt-2">
-    <h3 className="text-md font-semibold text-gray-800 mb-2">Preview:</h3>
-    <ul className="list-disc pl-6 text-gray-700">
-      {discussion.split('\n').map((point, index) => (
-       <li key={index} className="break-words">{point}</li>
-      ))}
-    </ul>
-  </div>
-)}
+        <div className="mb-6">
+          <label
+            htmlFor="Discussion"
+            className="block mb-1 text-sm font-medium text-gray-700"
+          >
+            Discussion Points
+          </label>
+          <textarea
+            id="Discussion"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            placeholder="Enter the points discussed in the meeting (one per line)"
+            rows="4"
+            onChange={(e) => setDiscussion(e.target.value)}
+            value={discussion}
+          />
+        </div>
 
+        {discussion && (
+          <div className="mb-6 mt-2">
+            <h3 className="text-md font-semibold text-gray-800 mb-2">
+              Preview:
+            </h3>
+            <ul className="list-disc pl-6 text-gray-700">
+              {discussion.split("\n").map((point, index) => (
+                <li key={index} className="break-words">
+                  {point}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
-          <button
-            type="submit"
-            className="w-full bg-purple-400 text-white font-semibold py-2 rounded-lg"
-            >Submit and Download PDF
-            </button>
-
-</div>
+        <button
+          type="button"
+          onClick={handleSubmit}
+          className="w-full bg-purple-400 text-white font-semibold py-2 rounded-lg"
+        >
+          Submit and Download PDF
+        </button>
+      </div>
+      <div className="absolute top-4 right-4">
+        <button
+          onClick={handleLogout}
+          className="bg-red-600 hover:bg-red-700 text-white px-6 py-2  rounded-lg text-md font-bold transition-all duration-300 cursor-pointer "
+        >
+          Logout
+        </button>
+      </div>
     </div>
-
-    );
+  );
 }
 
 export default MOMForm;
