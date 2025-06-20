@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -14,7 +15,8 @@ function Login() {
         { email, password },
         { withCredentials: true }
       );
-      navigate('/') 
+      localStorage.setItem("authToken", res.data.token);
+      navigate('/dashboard'); 
     } catch (error) {
       alert(error.response?.data?.message || "Login failed");
     }
@@ -39,16 +41,26 @@ function Login() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block mb-1 text-sm font-medium text-gray-700">Password</label>
-            <input
-              type="password"
-              id="password"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-              placeholder="Enter your password"
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
-            />
-          </div>
+  <label htmlFor="password" className="block mb-1 text-sm font-medium text-gray-700">Password</label>
+  <div className="relative">
+    <input
+      type={showPassword ? "text" : "password"}
+      id="password"
+      className="w-full px-4 py-2 border border-gray-300 rounded-lg pr-14"
+      placeholder="Enter your password"
+      onChange={(e) => setPassword(e.target.value)}
+      value={password}
+    />
+    <button
+      type="button"
+      onClick={() => setShowPassword(!showPassword)}
+      className="absolute inset-y-0 right-2 px-2 text-sm text-purple-500 hover:text-purple-700 focus:outline-none cursor-pointer"
+    >
+      {showPassword ? "Hide" : "Show"}
+    </button>
+  </div>
+</div>
+
 
           <button
             type="submit"
