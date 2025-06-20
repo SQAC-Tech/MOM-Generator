@@ -31,7 +31,16 @@ const handleSubmit = async () => {
 
     if (response.data.success) {
       alert("MOM submitted successfully!");
-      generatePDF(); // ✅ Download the PDF
+      generatePDF();
+
+      // Clear all form fields here
+      setDate("");
+      setTime("");
+      setMode("");
+      setAgenda("");
+      setDiscussion("");
+      setAttendees([]);
+      setDepartment(" ");
     } else {
       alert("Failed to submit MOM.");
     }
