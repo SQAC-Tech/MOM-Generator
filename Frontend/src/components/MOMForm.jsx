@@ -40,7 +40,7 @@ function MOMForm() {
 
       if (response.data.success) {
         alert("MOM submitted successfully!");
-        generatePDF();
+        await generatePDF();
 
         // Reset form
         setDate("");
@@ -75,18 +75,10 @@ function MOMForm() {
     const imgWidth = 50;
     const imgX = (pageWidth - imgWidth) / 2;
     doc.addImage(img, "JPEG", imgX, 10, imgWidth, 25);
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const imgWidth = 50;
-    const imgX = (pageWidth - imgWidth) / 2;
-    doc.addImage(img, "JPEG", imgX, 10, imgWidth, 25);
 
     doc.setFontSize(18);
     doc.text("Minutes of Meeting", pageWidth / 2, 45, { align: "center" });
 
-    doc.setFontSize(12);
-    doc.text(`Date: ${date}`, 20, 60);
-    doc.text(`Time: ${time}`, 20, 70);
-    doc.text(`Mode: ${mode}`, 20, 80);
     doc.setFontSize(12);
     doc.text(`Date: ${date}`, 20, 60);
     doc.text(`Time: ${time}`, 20, 70);
@@ -100,9 +92,6 @@ function MOMForm() {
         doc.text(`• ${name}`, 25, 105 + i * 8);
       });
 
-    const agendaStart = 105 + attendees.length * 8 + 10;
-    doc.text("Agenda:", 20, agendaStart);
-    doc.text(agenda, 25, agendaStart + 10);
     const agendaStart = 105 + attendees.length * 8 + 10;
     doc.text("Agenda:", 20, agendaStart);
     doc.text(agenda, 25, agendaStart + 10);
@@ -281,7 +270,6 @@ function MOMForm() {
             Discussion Points
           </label>
           <textarea
-            id="discussion"
             id="discussion"
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
             placeholder="One point per line"
