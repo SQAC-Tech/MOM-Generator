@@ -157,14 +157,14 @@ function MOMForm() {
           Minutes of the Meeting
         </h1>
         <div className="absolute top-4 left-4">
-  <button
-    onClick={() => navigate("/dashboard")}
-    className="flex items-center gap-2 bg-purple-600 text-white p-4 px-4 py-2 rounded-lg shadow hover:bg-gray-100 transition-all duration-300"
-  >
-    <ArrowLeft className="w-4 h-4" />
-    Dashboard
-  </button>
-</div>
+          <button
+            onClick={() => navigate("/dashboard")}
+            className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg shadow hover:bg-purple-700 transition-colors duration-300"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Dashboard
+          </button>
+        </div>
 
         <div className="mb-6">
           <label htmlFor="Domain" className="block mb-1 text-sm font-medium text-gray-700">
@@ -303,7 +303,11 @@ function MOMForm() {
         <button
           type="button"
           onClick={generatePDFBlob}
-          className="w-full mb-3 bg-pink-400 hover:bg-pink-600 text-white font-semibold py-2 rounded-lg cursor-pointer"
+          disabled={!isFormValid}
+          className={`w-full mb-3 ${isFormValid
+            ? "bg-pink-400 hover:bg-pink-600 cursor-pointer"
+            : "bg-gray-300 cursor-not-allowed"
+            } text-white font-semibold py-2 rounded-lg transition-all duration-300`}
         >
           Preview PDF
         </button>
@@ -312,11 +316,10 @@ function MOMForm() {
           type="button"
           onClick={handleSubmit}
           disabled={!isFormValid}
-          className={`w-full ${
-            isFormValid
-              ? "bg-purple-400 hover:bg-purple-500"
-              : "bg-gray-300 cursor-not-allowed"
-          } text-white font-semibold py-2 rounded-lg transition-all duration-300`}
+          className={`w-full ${isFormValid
+            ? "bg-purple-400 hover:bg-purple-500 cursor-pointer"
+            : "bg-gray-300 cursor-not-allowed"
+            } text-white font-semibold py-2 rounded-lg transition-all duration-300`}
         >
           Submit and Download PDF
         </button>
