@@ -6,7 +6,6 @@ import peopleData from "../../people.json";
 import axios from "axios";
 import jsPDF from "jspdf";
 
-
 function MOMForm() {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
@@ -18,98 +17,94 @@ function MOMForm() {
   const discussionPoints = discussion.split("\n");
   const navigate = useNavigate();
 
-const handleSubmit = async () => {
-  try {
-    const response = await axios.post("http://localhost:3000/mom", {
-      date,
-      time,
-      mode,
-      agenda,
-      attendees: attendees.map((a) => a.name),
-      discussion,
-    });
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post("http://localhost:3000/mom", {
+        date,
+        time,
+        mode,
+        agenda,
+        attendees: attendees.map((a) => a.name),
+        discussion,
+      });
 
-    if (response.data.success) {
-      alert("MOM submitted successfully!");
-      generatePDF();
+      if (response.data.success) {
+        alert("MOM submitted successfully!");
+        generatePDF();
 
-      // Clear all form fields here
-      setDate("");
-      setTime("");
-      setMode("");
-      setAgenda("");
-      setDiscussion("");
-      setAttendees([]);
-      setDepartment(" ");
-    } else {
-      alert("Failed to submit MOM.");
+        // Clear all form fields here
+        setDate("");
+        setTime("");
+        setMode("");
+        setAgenda("");
+        setDiscussion("");
+        setAttendees([]);
+        setDepartment(" ");
+      } else {
+        alert("Failed to submit MOM.");
+      }
+    } catch (err) {
+      console.error("API Error:", err);
+      alert("Error submitting MOM: " + err.message);
     }
-  } catch (err) {
-    console.error("API Error:", err);
-    alert("Error submitting MOM: " + err.message);
-  }
-};
-
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     navigate("/login");
   };
-  
- const generatePDF = async () => {
-  const doc = new jsPDF();
 
-  // Load image synchronously
-  const img = new Image();
-  img.src = "/SQAC.jpg";
+  const generatePDF = async () => {
+    const doc = new jsPDF();
 
-  await new Promise((resolve) => {
-    img.onload = resolve;
-  });
+    // Load image synchronously
+    const img = new Image();
+    img.src = "/SQAC.jpg";
 
-  // Add logo (centered)
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const imgWidth = 50;
-  const imgX = (pageWidth - imgWidth) / 2;
- doc.addImage(img, "JPEG", imgX, 10, imgWidth, 25);
-
-  // Title
-  doc.setFontSize(18);
-  doc.text("Minutes of Meeting", pageWidth / 2, 45, { align: "center" });
-
-  // Info
-  doc.setFontSize(12);
-  doc.text(`Date: ${date}`, 20, 60);
-  doc.text(`Time: ${time}`, 20, 70);
-  doc.text(`Mode: ${mode}`, 20, 80);
-
-  // Attendees
-  doc.text("Attendees:", 20, 95);
-  attendees
-    .map((a) => a.name)
-    .sort()
-    .forEach((name, i) => {
-      doc.text(`• ${name}`, 25, 105 + i * 8);
+    await new Promise((resolve) => {
+      img.onload = resolve;
     });
 
-  // Agenda
-  const agendaStart = 105 + attendees.length * 8 + 10;
-  doc.text("Agenda:", 20, agendaStart);
-  doc.text(agenda, 25, agendaStart + 10);
+    // Add logo (centered)
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const imgWidth = 50;
+    const imgX = (pageWidth - imgWidth) / 2;
+    doc.addImage(img, "JPEG", imgX, 10, imgWidth, 25);
 
-  // Discussion Points
-  const discussionStart = agendaStart + 30;
-  doc.text("Discussion Points:", 20, discussionStart);
-  discussion.split("\n").forEach((point, i) => {
-    doc.text(`• ${point}`, 25, discussionStart + 10 + i * 8);
-  });
+    // Title
+    doc.setFontSize(18);
+    doc.text("Minutes of Meeting", pageWidth / 2, 45, { align: "center" });
 
-  // Save PDF
-  doc.save(`MOM_${date}.pdf`);
-};
+    // Info
+    doc.setFontSize(12);
+    doc.text(`Date: ${date}`, 20, 60);
+    doc.text(`Time: ${time}`, 20, 70);
+    doc.text(`Mode: ${mode}`, 20, 80);
 
+    // Attendees
+    doc.text("Attendees:", 20, 95);
+    attendees
+      .map((a) => a.name)
+      .sort()
+      .forEach((name, i) => {
+        doc.text(`• ${name}`, 25, 105 + i * 8);
+      });
 
+    // Agenda
+    const agendaStart = 105 + attendees.length * 8 + 10;
+    doc.text("Agenda:", 20, agendaStart);
+    doc.text(agenda, 25, agendaStart + 10);
 
+    // Discussion Points
+    const discussionStart = agendaStart + 30;
+    doc.text("Discussion Points:", 20, discussionStart);
+    discussion.split("\n").forEach((point, i) => {
+      doc.text(`• ${point}`, 25, discussionStart + 10 + i * 8);
+    });
+
+    // Save PDF
+    doc.save(`MOM_${date}.pdf`);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-300 via-purple-300 to-indigo-400 flex items-center justify-center py-10">
@@ -119,7 +114,7 @@ const handleSubmit = async () => {
         </h1>
 
         <div className="mb-6">
-           <label
+          <label
             htmlFor="Domain type"
             className="block mb-1 text-sm font-medium text-gray-700"
           >
@@ -137,8 +132,6 @@ const handleSubmit = async () => {
             <option value="Offline">Technical</option>
           </select>
         </div>
-
-
 
         <div className="mb-6">
           <label
@@ -290,14 +283,14 @@ const handleSubmit = async () => {
         >
           Submit and Download PDF
         </button>
-      </div>
-      <div className="absolute top-4 right-4">
-        <button
-          onClick={handleLogout}
-          className="bg-red-600 hover:bg-red-700 text-white px-6 py-2  rounded-lg text-md font-bold transition-all duration-300 cursor-pointer "
-        >
-          Logout
-        </button>
+       <div className="absolute top-0 right-0 sm:top-7 sm:right-6 lg:top-7 lg:right-2">
+  <button
+    onClick={handleLogout}
+    className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg text-sm sm:text-base font-bold transition-all duration-300 cursor-pointer"
+  >
+    Logout
+  </button>
+</div>
       </div>
     </div>
   );

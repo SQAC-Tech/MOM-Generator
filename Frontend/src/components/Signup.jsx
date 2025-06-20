@@ -78,7 +78,7 @@ function Signup() {
 
           <button
             type="submit"
-            className="w-full bg-purple-400 text-white font-semibold py-2 rounded-lg"
+            className="w-full bg-purple-400 text-white font-semibold py-2 rounded-lg cursor-pointer"
           >
             Sign Up
           </button>
