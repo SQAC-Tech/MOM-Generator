@@ -9,6 +9,7 @@ import bodyParser from 'body-parser';
 
 import AuthRouter from './Routes/AuthRouter.js';
 import DashboardRouter from './Routes/DashboardRouter.js';
+import router from './Routes/MOMRouter.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,6 +22,7 @@ app.use(bodyParser.json());
 
 app.use('/auth', AuthRouter);
 app.use('/dashboard', DashboardRouter);
+app.use('/mom',router);
 
 app.get('/', (req, res) => {
   res.send('Hello from MOM backend!');
