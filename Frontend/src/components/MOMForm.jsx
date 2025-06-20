@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import peopleData from "../../people.json";
 import axios from "axios";
+import jsPDF from "jspdf";
+
 
 function MOMForm() {
   const [date, setDate] = useState("");
@@ -15,29 +17,89 @@ function MOMForm() {
   const discussionPoints = discussion.split("\n");
   const navigate = useNavigate();
 
-  const handleSubmit = async () => {
-    try {
-      const response = await axios.post("http://localhost:3000/mom", {
-        date,
-        time,
-        mode,
-        agenda,
-      });
+const handleSubmit = async () => {
+  try {
+    const response = await axios.post("http://localhost:3000/mom", {
+      date,
+      time,
+      mode,
+      agenda,
+      attendees: attendees.map((a) => a.name),
+      discussion,
+    });
 
-      if (response.data.success) {
-        alert("MOM submitted successfully!");
-      } else {
-        alert("Failed to submit MOM.");
-      }
-    } catch (err) {
-      console.error("API Error:", err);
-      alert("Error submitting MOM: " + err.message);
+    if (response.data.success) {
+      alert("MOM submitted successfully!");
+      generatePDF(); // ✅ Download the PDF
+    } else {
+      alert("Failed to submit MOM.");
     }
-  };
+  } catch (err) {
+    console.error("API Error:", err);
+    alert("Error submitting MOM: " + err.message);
+  }
+};
+
+
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     navigate("/login");
   };
+  
+ const generatePDF = async () => {
+  const doc = new jsPDF();
+
+  // Load image synchronously
+  const img = new Image();
+  img.src = "/SQAC.jpg";
+
+  await new Promise((resolve) => {
+    img.onload = resolve;
+  });
+
+  // Add logo (centered)
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const imgWidth = 50;
+  const imgX = (pageWidth - imgWidth) / 2;
+ doc.addImage(img, "JPEG", imgX, 10, imgWidth, 25);
+
+  // Title
+  doc.setFontSize(18);
+  doc.text("Minutes of Meeting", pageWidth / 2, 45, { align: "center" });
+
+  // Info
+  doc.setFontSize(12);
+  doc.text(`Date: ${date}`, 20, 60);
+  doc.text(`Time: ${time}`, 20, 70);
+  doc.text(`Mode: ${mode}`, 20, 80);
+
+  // Attendees
+  doc.text("Attendees:", 20, 95);
+  attendees
+    .map((a) => a.name)
+    .sort()
+    .forEach((name, i) => {
+      doc.text(`• ${name}`, 25, 105 + i * 8);
+    });
+
+  // Agenda
+  const agendaStart = 105 + attendees.length * 8 + 10;
+  doc.text("Agenda:", 20, agendaStart);
+  doc.text(agenda, 25, agendaStart + 10);
+
+  // Discussion Points
+  const discussionStart = agendaStart + 30;
+  doc.text("Discussion Points:", 20, discussionStart);
+  discussion.split("\n").forEach((point, i) => {
+    doc.text(`• ${point}`, 25, discussionStart + 10 + i * 8);
+  });
+
+  // Save PDF
+  doc.save(`MOM_${date}.pdf`);
+};
+
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-300 via-purple-300 to-indigo-400 flex items-center justify-center py-10">
