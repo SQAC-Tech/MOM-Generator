@@ -17,15 +17,25 @@ function MOMForm() {
   const [showPreview, setShowPreview] = useState(false);
   const navigate = useNavigate();
 
+  const isFormValid =
+    date.trim() !== "" &&
+    time.trim() !== "" &&
+    mode.trim() !== "" &&
+    agenda.trim() !== "" &&
+    discussion.trim() !== "" &&
+    attendees.length > 0 &&
+    department.trim() !== "" &&
+    department.trim() !== " ";
+
   const handleSubmit = async () => {
     try {
       const response = await axios.post("http://localhost:3000/mom", {
         date,
-        time,
+        time: time.trim(),
         mode,
-        agenda,
+        agenda: agenda.trim(),
         attendees: attendees.map((a) => a.name),
-        discussion,
+        discussion: discussion.trim(),
       });
 
       if (response.data.success) {
@@ -65,10 +75,18 @@ function MOMForm() {
     const imgWidth = 50;
     const imgX = (pageWidth - imgWidth) / 2;
     doc.addImage(img, "JPEG", imgX, 10, imgWidth, 25);
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const imgWidth = 50;
+    const imgX = (pageWidth - imgWidth) / 2;
+    doc.addImage(img, "JPEG", imgX, 10, imgWidth, 25);
 
     doc.setFontSize(18);
     doc.text("Minutes of Meeting", pageWidth / 2, 45, { align: "center" });
 
+    doc.setFontSize(12);
+    doc.text(`Date: ${date}`, 20, 60);
+    doc.text(`Time: ${time}`, 20, 70);
+    doc.text(`Mode: ${mode}`, 20, 80);
     doc.setFontSize(12);
     doc.text(`Date: ${date}`, 20, 60);
     doc.text(`Time: ${time}`, 20, 70);
@@ -82,6 +100,9 @@ function MOMForm() {
         doc.text(`• ${name}`, 25, 105 + i * 8);
       });
 
+    const agendaStart = 105 + attendees.length * 8 + 10;
+    doc.text("Agenda:", 20, agendaStart);
+    doc.text(agenda, 25, agendaStart + 10);
     const agendaStart = 105 + attendees.length * 8 + 10;
     doc.text("Agenda:", 20, agendaStart);
     doc.text(agenda, 25, agendaStart + 10);
@@ -261,6 +282,7 @@ function MOMForm() {
           </label>
           <textarea
             id="discussion"
+            id="discussion"
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
             placeholder="One point per line"
             rows="4"
@@ -291,7 +313,12 @@ function MOMForm() {
         <button
           type="button"
           onClick={handleSubmit}
-          className="w-full bg-purple-400   hover:bg-purple-600 text-white font-semibold py-2 rounded-lg cursor-pointer"
+          disabled={!isFormValid}
+          className={`w-full ${
+            isFormValid
+              ? "bg-purple-400 hover:bg-purple-500"
+              : "bg-gray-300 cursor-not-allowed"
+          } text-white font-semibold py-2 rounded-lg transition-all duration-300`}
         >
           Submit and Download PDF
         </button>
