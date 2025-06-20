@@ -15,6 +15,7 @@
   { "id": 14, "name": "Keshat Saini" },
   { "id": 15, "name": "Mahik Jain" },
   { "id": 16, "name": "MANYA SHARMA" },
+  { "id": 35, "name": "Nityam Sharma" },
   { "id": 17, "name": "Paavan Parmar" },
   { "id": 18, "name": "Pawan Varma" },
   { "id": 19, "name": "pranay jain" },
@@ -29,7 +30,10 @@
   { "id": 28, "name": "SIMRAN NAYAK" },
   { "id": 29, "name": "Spandan Sahai" },
   { "id": 30, "name": "Tusharika Suman" },
+  { "id": 34, "name": "Tanmay Bansal" },
   { "id": 31, "name": "Ujaan Sen" },
   { "id": 32, "name": "Vaibhav Dev" },
-  { "id": 33, "name": "Vansh Jain" }
+  { "id": 33, "name": "Vansh Jain" },
+  { "id": 36, "name": "Vedant Modi" },
+  { "id": 37, "name": "Yash Gupta" }
 ]
