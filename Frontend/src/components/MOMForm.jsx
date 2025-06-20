@@ -14,6 +14,7 @@ function MOMForm() {
   const [agenda, setAgenda] = useState("");
   const [discussion, setDiscussion] = useState("");
   const [attendees, setAttendees] = useState([]);
+  const [department, setDepartment] = useState(" ");
   const discussionPoints = discussion.split("\n");
   const navigate = useNavigate();
 
@@ -109,9 +110,31 @@ const handleSubmit = async () => {
         </h1>
 
         <div className="mb-6">
+           <label
+            htmlFor="Domain type"
+            className="block mb-1 text-sm font-medium text-gray-700"
+          >
+            Domain Type
+          </label>
+          <select
+            id="Domain"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            onChange={(e) => setDepartment(e.target.value)}
+            value={department}
+          >
+            <option value=" ">Select your Domain</option>
+            <option value="Offline">All</option>
+            <option value="Online">Corporate</option>
+            <option value="Offline">Technical</option>
+          </select>
+        </div>
+
+
+
+        <div className="mb-6">
           <label
             htmlFor="date"
-            className="block mb-1 text-sm font-medium text-gray-700"
+            className="block mb-1 text-sm font-medium text-gray-700 opacity-0.7"
           >
             Date
           </label>
