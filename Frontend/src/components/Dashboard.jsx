@@ -25,9 +25,13 @@ const Dashboard = () => {
   }, []);
 
   return (
-  <div className="min-h-screen bg-gradient-to-b from-pink-300 via-purple-300 to-indigo-400 p-6 relative">
-    <div className="max-w-6xl mx-auto">
-      <h1 className="text-4xl font-bold text-gray-800 mb-10 text-center">Dashboard</h1>
+    <div className="min-h-screen bg-gradient-to-b from-pink-300 via-purple-300 to-indigo-400 p-6 relative">
+      <div className="max-w-6xl mx-auto">
+
+        <div className="flex justify-center mb-4">
+  <img src="/public/SQAClogo.png" alt="SQAC Logo" className="h-16 w-auto" />
+</div>
+        <h1 className="text-4xl font-bold text-gray-800 mb-10 text-center">Dashboard</h1>
 
       {momList.length === 0 ? (
         <p className="text-center text-xl text-gray-800 bg-white p-6 rounded-xl shadow-md">
