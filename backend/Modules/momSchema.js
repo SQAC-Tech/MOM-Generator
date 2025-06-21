@@ -14,6 +14,9 @@ const MOMSchema = new Schema({
     agenda:{
         type: String,
     },
+    department: {
+    type: String, // <-- ADD THIS
+  },
 
 });
 

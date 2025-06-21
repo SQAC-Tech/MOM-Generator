@@ -37,6 +37,7 @@ function MOMForm() {
         agenda: agenda.trim(),
         attendees: attendees.map((a) => a.name),
         discussion: discussion.trim(),
+        department: department.trim(),
       });
 
       if (response.data.success) {
