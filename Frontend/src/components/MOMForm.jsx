@@ -178,7 +178,7 @@ function MOMForm() {
           </label>
           <select
             id="Domain"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg cursor-pointer"
             onChange={(e) => setDepartment(e.target.value)}
             value={department}
           >
