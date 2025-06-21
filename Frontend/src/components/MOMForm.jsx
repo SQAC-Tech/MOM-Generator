@@ -156,8 +156,8 @@ function MOMForm() {
       <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-4xl">
 
         <div className="flex justify-center mb-4">
-  <img src="/public/SQAClogo.png" alt="SQAC Logo" className="h-16 w-auto" />
-</div>
+          <img src="/public/SQAClogo.png" alt="SQAC Logo" className="h-16 w-auto" />
+        </div>
 
         <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
           Minutes of the Meeting
@@ -165,7 +165,7 @@ function MOMForm() {
         <div className="absolute top-4 left-4">
           <button
             onClick={() => navigate("/dashboard")}
-            className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg shadow hover:bg-purple-700 transition-colors duration-300"
+            className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg shadow hover:bg-purple-700 transition-colors duration-300 cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
             Dashboard
