@@ -25,6 +25,16 @@ function Login() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-300 via-purple-300 to-indigo-400 flex items-center justify-center">
       <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
+
+
+        <div className="flex justify-center mb-4">
+  <img
+    src="/public/SQAClogo.png"
+    alt="SQAClogo"
+    className="h-16 w-auto"
+  />
+</div>
+
         <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Login</h2>
 
         <form onSubmit={handleLogin} className="space-y-4">
