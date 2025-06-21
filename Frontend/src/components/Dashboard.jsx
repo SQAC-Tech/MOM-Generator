@@ -23,9 +23,21 @@ const Dashboard = () => {
 
     fetchMOMs();
   }, []);
+    const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    navigate("/login");
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-300 via-purple-300 to-indigo-400 p-6 relative">
+      <div className="absolute top-4 right-4">
+        <button
+          onClick={handleLogout}
+          className="bg-purple-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg text-sm sm:text-base font-bold transition-all duration-300 cursor-pointer"
+        >
+          Logout
+        </button>
+      </div>
       <div className="max-w-6xl mx-auto">
 
         <div className="flex justify-center mb-4">
