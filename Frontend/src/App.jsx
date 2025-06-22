@@ -5,6 +5,7 @@ import Signup from './components/Signup';
 import Dashboard from './components/Dashboard';
 import MOMForm from './components/MOMForm';
 import ProtectedRoute from './components/ProtectedRoute';
+import Credits from './components/Credits';
 
 function App() {
   return (
@@ -23,6 +24,11 @@ function App() {
           <MOMForm />
           </ProtectedRoute>
           } />
+           <Route path="/credits" element={
+          <ProtectedRoute>
+          <Credits/>
+          </ProtectedRoute>
+          }/> 
         
       </Routes>
     </Router>

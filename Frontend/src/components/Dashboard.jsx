@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Plus } from "lucide-react";
 import axios from "axios";
 
@@ -54,6 +54,13 @@ const Dashboard = () => {
         >
           Logout
         </button>
+      </div>
+      <div className="absolute top-4 left-4 cursor-pointer">
+        <Link to="/credits"><button
+          className="bg-purple-600 hover:bg-purple-800 text-white px-6 py-2 rounded-lg text-sm sm:text-base font-bold transition-all duration-300 cursor-pointer"
+        >
+          Credits
+        </button></Link>
       </div>
 
       <div className="max-w-6xl mx-auto">
