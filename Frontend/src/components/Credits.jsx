@@ -5,6 +5,12 @@ import {Link} from "react-router-dom"
 
 const teamMembers = [
   {
+  name: "Priyanshu Vasudev",
+  role: "Tech Lead overseeing and guiding the entire project",
+  image: "",
+  emoji: "🧠",
+},
+  {
     name: "Akshaj Bansal",
     role: "Leading the team from front",
     image: "",
