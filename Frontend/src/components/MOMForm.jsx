@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, LogOut } from "lucide-react";
 import { Autocomplete, TextField } from "@mui/material";
 import peopleData from "../../people.json";
 import axios from "axios";
@@ -154,7 +154,6 @@ function MOMForm() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-300 via-purple-300 to-indigo-400 flex items-center justify-center py-10 relative">
       <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-4xl">
-
         <div className="flex justify-center mb-4">
           <img src="/public/SQAClogo.png" alt="SQAC Logo" className="h-16 w-auto" />
         </div>
@@ -162,13 +161,26 @@ function MOMForm() {
         <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
           Minutes of the Meeting
         </h1>
-        <div className="absolute top-4 left-4">
+
+        {/* Back Button */}
+        <div className="absolute top-1 left-4">
           <button
             onClick={() => navigate("/dashboard")}
             className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg shadow hover:bg-purple-700 transition-colors duration-300 cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
-            Dashboard
+            <span className="hidden sm:inline">Dashboard</span>
+          </button>
+        </div>
+
+        {/* Logout Button */}
+        <div className="absolute top-1 right-4">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 bg-purple-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm sm:text-base font-bold transition-all duration-300 cursor-pointer"
+          >
+            <LogOut className="w-4 h-4" />
+            <span className="hidden sm:inline">Logout</span>
           </button>
         </div>
 
@@ -328,15 +340,6 @@ function MOMForm() {
             } text-white font-semibold py-2 rounded-lg transition-all duration-300`}
         >
           Submit and Download PDF
-        </button>
-      </div>
-
-      <div className="absolute top-4 right-4">
-        <button
-          onClick={handleLogout}
-          className="bg-purple-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg text-sm sm:text-base font-bold transition-all duration-300 cursor-pointer"
-        >
-          Logout
         </button>
       </div>
 
