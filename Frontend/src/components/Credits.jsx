@@ -30,7 +30,7 @@ const teamMembers = [
   },
   {
     name: "Aditya Chaudhary",
-    role: "UI Designer and Frontend Developer",
+    role: "Frontend Developer",
     image: "",
     emoji: "🌈",
   },
