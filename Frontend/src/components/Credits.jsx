@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import VanillaTilt from "vanilla-tilt";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom"
 
 const teamMembers = [
+  {
+    name: "Priyanshu Vasudev",
+    role: "Tech Lead overseeing and guiding the entire project",
+    image: "",
+    emoji: "🧠",
+  },
   {
     name: "Akshaj Bansal",
     role: "Leading the team from front",
@@ -61,13 +67,13 @@ const Credits = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-300 via-purple-300 to-indigo-400 p-6 overflow-hidden relative text-white font-[Poppins]">
-       <div className="absolute top-2 left-1  z-20">
-  <Link to="/dashboard">
-    <button className="flex items-center gap-2 bg-purple-600 text-white px-3 py-1.5 sm:px-5 sm:py-2 rounded-lg shadow-md hover:bg-purple-700 transition-all text-sm sm:text-base">
-      Dashboard
-    </button>
-  </Link>
-</div>
+      <div className="absolute top-2 left-1  z-20">
+        <Link to="/dashboard">
+          <button className="flex items-center gap-2 bg-purple-600 text-white px-3 py-1.5 sm:px-5 sm:py-2 rounded-lg shadow-md hover:bg-purple-700 transition-all text-sm sm:text-base">
+            Dashboard
+          </button>
+        </Link>
+      </div>
       <div className="absolute w-[40vw] h-[40vw] bg-purple-500 opacity-20 rounded-full top-[10%] left-[-10%] blur-3xl animate-pulse z-0" />
       <div className="absolute w-[30vw] h-[30vw] bg-indigo-500 opacity-20 rounded-full bottom-[10%] right-[-10%] blur-3xl animate-pulse z-0" />
 
@@ -78,7 +84,7 @@ const Credits = () => {
         animate={{ opacity: 1, y: 30 }}
         transition={{ duration: 0.8 }}
       >
-        Meet the Team 
+        Meet the Team
       </motion.h1>
       <div className="flex flex-wrap justify-center gap-10 z-10 relative">
         {teamMembers.map((member, index) => (
