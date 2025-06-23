@@ -82,9 +82,11 @@ const Dashboard = () => {
               className="px-4 py-2 rounded-lg border border-gray-300 cursor-pointer"
             >
               <option value="All">All</option>
+              <option value="Full Team">Full Team</option>
               <option value="Technical">Technical</option>
               <option value="Corporate">Corporate</option>
             </select>
+
           </div>
 
           <div>
