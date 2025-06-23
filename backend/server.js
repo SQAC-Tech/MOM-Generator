@@ -31,3 +31,18 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
+
+import https from 'https';
+
+// Replace with your actual Render deployment URL
+const SELF_URL = 'https://your-render-app.onrender.com';
+
+if (process.env.NODE_ENV === 'production') {
+  setInterval(() => {
+    https.get(SELF_URL, (res) => {
+      console.log(`[KEEP-ALIVE] Pinged ${SELF_URL} | Status: ${res.statusCode}`);
+    }).on('error', (err) => {
+      console.error(`[KEEP-ALIVE] Error pinging: ${err.message}`);
+    });
+  }, 14 * 60 * 1000); // every 14 minutes
+}
