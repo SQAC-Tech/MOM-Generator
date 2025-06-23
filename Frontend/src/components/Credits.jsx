@@ -5,12 +5,6 @@ import {Link} from "react-router-dom"
 
 const teamMembers = [
   {
-  name: "Priyanshu Vasudev",
-  role: "Tech Lead overseeing and guiding the entire project",
-  image: "",
-  emoji: "🧠",
-},
-  {
     name: "Akshaj Bansal",
     role: "Leading the team from front",
     image: "",
@@ -124,7 +118,7 @@ const Credits = () => {
 
       {/* Footer */}
       <footer className="text-center mt-16 opacity-80 z-10 relative">
-        <p className="text-xl ">Built by Team SQAC © 2025</p>
+        <p className="text-2xl ">Built by Team SQAC © 2025</p>
       </footer>
     </div>
   );
