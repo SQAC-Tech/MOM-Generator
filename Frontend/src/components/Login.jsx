@@ -29,7 +29,7 @@ function Login() {
 
         <div className="flex justify-center mb-4">
   <img
-    src="/public/SQAClogo.png"
+    src="/SQACLogo.png"
     alt="SQAClogo"
     className="h-16 w-auto"
   />

@@ -66,7 +66,7 @@ const Dashboard = () => {
       <div className="max-w-6xl mx-auto">
         {/* Logo */}
         <div className="flex justify-center mb-4">
-          <img src="/public/SQAClogo.png" alt="SQAC Logo" className="h-16 w-auto" />
+          <img src="/SQACLogo.png" alt="SQAC Logo" className="h-16 w-auto" />
         </div>
 
         {/* Heading */}
