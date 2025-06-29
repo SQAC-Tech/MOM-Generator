@@ -15,7 +15,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors({
-  origin: 'http://localhost:5173', // Match frontend Vite URL
+  origin: 'https://mom-generator-eight.vercel.app/', // Match frontend Vite URL
   credentials: true
 }));
 app.use(bodyParser.json());
@@ -35,7 +35,7 @@ app.listen(PORT, () => {
 import https from 'https';
 
 // Replace with your actual Render deployment URL
-const SELF_URL = 'https://your-render-app.onrender.com';
+const SELF_URL = 'mom-generator.onrender.com';
 
 if (process.env.NODE_ENV === 'production') {
   setInterval(() => {
