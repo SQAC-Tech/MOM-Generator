@@ -30,7 +30,7 @@ function MOMForm() {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/mom", {
+      const response = await axios.post("https://mom-generator.onrender.com/mom", {
         date,
         time: time.trim(),
         mode,

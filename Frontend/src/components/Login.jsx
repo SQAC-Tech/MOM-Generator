@@ -11,7 +11,7 @@ function Login() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        'http://localhost:3000/auth/login',
+        'https://mom-generator.onrender.com/auth/login',
         { email, password },
         { withCredentials: true }
       );

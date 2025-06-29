@@ -13,7 +13,7 @@ function Signup() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        'http://localhost:3000/auth/signup',
+        'https://mom-generator.onrender.com/auth/signup',
         { name, email, password },
         { withCredentials: true }
       );
