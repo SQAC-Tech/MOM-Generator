@@ -92,6 +92,7 @@ function MOMForm() {
   doc.line(20, 55, pageWidth - 20, 55);
 
   doc.setFont("helvetica", "normal");
+  doc.setFontSize(12);  
 };
 
 const generatePDF = async () => {
