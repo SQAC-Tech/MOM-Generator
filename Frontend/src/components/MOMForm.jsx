@@ -90,6 +90,8 @@ function MOMForm() {
   doc.text("Minutes of Meeting", pageWidth / 2, 50, { align: "center" });
   doc.setLineWidth(0.2);
   doc.line(20, 55, pageWidth - 20, 55);
+
+  doc.setFont("helvetica", "normal");
 };
 
 const generatePDF = async () => {
