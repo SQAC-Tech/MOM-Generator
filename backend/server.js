@@ -32,17 +32,16 @@ app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
 
-import https from 'https';
 
 // Replace with your actual Render deployment URL
-const SELF_URL = 'mom-generator.onrender.com';
+const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
+
+const SELF_URL = 'https://mom-generator.onrender.com/';
 
 if (process.env.NODE_ENV === 'production') {
   setInterval(() => {
-    https.get(SELF_URL, (res) => {
-      console.log(`[KEEP-ALIVE] Pinged ${SELF_URL} | Status: ${res.statusCode}`);
-    }).on('error', (err) => {
-      console.error(`[KEEP-ALIVE] Error pinging: ${err.message}`);
-    });
+    fetch(SELF_URL)
+      .then(res => console.log(`[KEEP-ALIVE] Pinged ${SELF_URL} | Status: ${res.status}`))
+      .catch(err => console.error(`[KEEP-ALIVE] Error pinging: ${err.message}`));
   }, 14 * 60 * 1000); // every 14 minutes
 }
