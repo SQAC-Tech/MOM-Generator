@@ -68,28 +68,7 @@ function MOMForm() {
 
   // Function to generate PDF and download it
 
-  const generatePDF = async () => {
-  const doc = new jsPDF();
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
-
-  const logo = new Image();
-  logo.src = "/SQAC.jpg";
-
-  const bg = new Image();
-  bg.src = "/gradient-bg.png";
-
-  await Promise.all([
-    new Promise((resolve) => {
-      logo.onload = resolve;
-      logo.onerror = () => resolve();
-    }),
-    new Promise((resolve) => {
-      bg.onload = resolve;
-      bg.onerror = () => resolve();
-    })
-  ]);
-
+  const drawPDFPageLayout = (doc, bg, logo, pageWidth, pageHeight) => {
   if (bg.complete) {
     doc.addImage(bg, "PNG", 0, 0, pageWidth, pageHeight);
   }
@@ -111,66 +90,91 @@ function MOMForm() {
   doc.text("Minutes of Meeting", pageWidth / 2, 50, { align: "center" });
   doc.setLineWidth(0.2);
   doc.line(20, 55, pageWidth - 20, 55);
+};
+
+const generatePDF = async () => {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const logo = new Image();
+  logo.src = "/SQAC.jpg";
+  const bg = new Image();
+  bg.src = "/gradient-bg.png";
+
+  await Promise.all([
+    new Promise((resolve) => (logo.onload = resolve)),
+    new Promise((resolve) => (bg.onload = resolve)),
+  ]);
+
+  drawPDFPageLayout(doc, bg, logo, pageWidth, pageHeight);
 
   let y = 65;
-  doc.setFontSize(12);
+  const lineHeight = 8;
+  const bottomMargin = pageHeight - 30;
 
+  doc.setFontSize(12);
   doc.setFont("helvetica", "bold");
   doc.text("Date:", 20, y);
   doc.setFont("helvetica", "normal");
   doc.text(date, 50, y);
-
   y += 10;
+
   doc.setFont("helvetica", "bold");
   doc.text("Time:", 20, y);
   doc.setFont("helvetica", "normal");
   doc.text(time, 50, y);
-
   y += 10;
+
   doc.setFont("helvetica", "bold");
   doc.text("Mode:", 20, y);
   doc.setFont("helvetica", "normal");
   doc.text(mode, 50, y);
-
   y += 10;
+
   doc.setFont("helvetica", "bold");
   doc.text("Domain:", 20, y);
   doc.setFont("helvetica", "normal");
   doc.text(department, 50, y);
-
   y += 20;
+
   doc.setFont("helvetica", "bold");
   doc.text("Attendees:", 20, y);
   doc.setFont("helvetica", "normal");
-  attendees
-    .map((a) => a.name)
-    .sort()
-    .forEach((name, i) => {
-      doc.text(`• ${name}`, 25, y + 10 + i * 8);
-    });
+  attendees.map((a) => a.name).sort().forEach((name) => {
+    if (y + lineHeight > bottomMargin) {
+      doc.addPage();
+      drawPDFPageLayout(doc, bg, logo, pageWidth, pageHeight);
+      y = 65;
+    }
+    doc.text(`• ${name}`, 25, y);
+    y += lineHeight;
+  });
 
-  y += attendees.length * 8 + 20;
-
+  y += 10;
   doc.setFont("helvetica", "bold");
   doc.text("Agenda:", 20, y);
   y += 10;
   doc.setFont("helvetica", "normal");
-  doc.text(agenda, 25, y);
+  agenda.split("\n").forEach((line) => {
+    if (y + lineHeight > bottomMargin) {
+      doc.addPage();
+      drawPDFPageLayout(doc, bg, logo, pageWidth, pageHeight);
+      y = 65;
+    }
+    doc.text(line, 25, y);
+    y += lineHeight;
+  });
 
-  y += 20;
-
+  y += 10;
   doc.setFont("helvetica", "bold");
   doc.text("Discussion Points:", 20, y);
   y += 10;
   doc.setFont("helvetica", "normal");
-
-  const lineHeight = 8;
-  const bottomMargin = pageHeight - 30;
-
   discussion.split("\n").forEach((point) => {
     if (y + lineHeight > bottomMargin) {
       doc.addPage();
-      y = 30;
+      drawPDFPageLayout(doc, bg, logo, pageWidth, pageHeight);
+      y = 65;
     }
     doc.text(`• ${point}`, 25, y);
     y += lineHeight;
@@ -179,118 +183,89 @@ function MOMForm() {
   doc.save(`MOM_${date}.pdf`);
 };
 
-
-
-
-  const generatePDFBlob = async () => {
+const generatePDFBlob = async () => {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
-
   const logo = new Image();
   logo.src = "/SQAC.jpg";
-
   const bg = new Image();
   bg.src = "/gradient-bg.png";
 
   await Promise.all([
-    new Promise((resolve) => {
-      logo.onload = resolve;
-      logo.onerror = () => {
-        console.warn("Logo not loaded.");
-        resolve();
-      };
-    }),
-    new Promise((resolve) => {
-      bg.onload = resolve;
-      bg.onerror = () => {
-        console.warn("Background not loaded.");
-        resolve();
-      };
-    }),
+    new Promise((resolve) => (logo.onload = resolve)),
+    new Promise((resolve) => (bg.onload = resolve)),
   ]);
 
-  if (bg.complete) {
-    doc.addImage(bg, "PNG", 0, 0, pageWidth, pageHeight, "FAST", 0.1);
-  }
-
-  doc.setDrawColor(50);
-  doc.setLineWidth(0.8);
-  doc.rect(10, 10, pageWidth - 20, pageHeight - 20);
-
-  if (logo.complete) {
-    const imgWidth = 80;
-    const imgHeight = 28;
-    const imgX = (pageWidth - imgWidth) / 2;
-    doc.addImage(logo, "JPEG", imgX, 13, imgWidth, imgHeight);
-  }
-
-  doc.setTextColor(0);
-  doc.setFontSize(20);
-  doc.setFont("helvetica", "bold");
-  doc.text("Minutes of Meeting", pageWidth / 2, 50, { align: "center" });
-  doc.setLineWidth(0.2);
-  doc.line(20, 55, pageWidth - 20, 55);
+  drawPDFPageLayout(doc, bg, logo, pageWidth, pageHeight);
 
   let y = 65;
-  doc.setFontSize(12);
+  const lineHeight = 8;
+  const bottomMargin = pageHeight - 30;
 
+  doc.setFontSize(12);
   doc.setFont("helvetica", "bold");
   doc.text("Date:", 20, y);
   doc.setFont("helvetica", "normal");
   doc.text(date, 50, y);
-
   y += 10;
+
   doc.setFont("helvetica", "bold");
   doc.text("Time:", 20, y);
   doc.setFont("helvetica", "normal");
   doc.text(time, 50, y);
-
   y += 10;
+
   doc.setFont("helvetica", "bold");
   doc.text("Mode:", 20, y);
   doc.setFont("helvetica", "normal");
   doc.text(mode, 50, y);
-
   y += 10;
+
   doc.setFont("helvetica", "bold");
   doc.text("Domain:", 20, y);
   doc.setFont("helvetica", "normal");
   doc.text(department, 50, y);
-
   y += 20;
+
   doc.setFont("helvetica", "bold");
   doc.text("Attendees:", 20, y);
   doc.setFont("helvetica", "normal");
-  attendees
-    .map((a) => a.name)
-    .sort()
-    .forEach((name, i) => {
-      doc.text(`• ${name}`, 25, y + 10 + i * 8);
-    });
+  attendees.map((a) => a.name).sort().forEach((name) => {
+    if (y + lineHeight > bottomMargin) {
+      doc.addPage();
+      drawPDFPageLayout(doc, bg, logo, pageWidth, pageHeight);
+      y = 65;
+    }
+    doc.text(`• ${name}`, 25, y);
+    y += lineHeight;
+  });
 
-  y += attendees.length * 8 + 20;
-
+  y += 10;
   doc.setFont("helvetica", "bold");
   doc.text("Agenda:", 20, y);
   y += 10;
   doc.setFont("helvetica", "normal");
-  doc.text(agenda, 25, y);
+  agenda.split("\n").forEach((line) => {
+    if (y + lineHeight > bottomMargin) {
+      doc.addPage();
+      drawPDFPageLayout(doc, bg, logo, pageWidth, pageHeight);
+      y = 65;
+    }
+    doc.text(line, 25, y);
+    y += lineHeight;
+  });
 
-  y += 20;
-
+  y += 10;
   doc.setFont("helvetica", "bold");
   doc.text("Discussion Points:", 20, y);
   y += 10;
   doc.setFont("helvetica", "normal");
-
-  const lineHeight = 8;
-  const bottomMargin = pageHeight - 30;
-
   discussion.split("\n").forEach((point) => {
     if (y + lineHeight > bottomMargin) {
       doc.addPage();
-      y = 30;
+      drawPDFPageLayout(doc, bg, logo, pageWidth, pageHeight);
+      y = 65;
     }
     doc.text(`• ${point}`, 25, y);
     y += lineHeight;
@@ -301,7 +276,8 @@ function MOMForm() {
   setPdfPreviewUrl(url);
   setShowPreview(true);
 };
-  
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-300 via-purple-300 to-indigo-400 flex items-center justify-center py-10 relative">
