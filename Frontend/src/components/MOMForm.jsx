@@ -69,219 +69,239 @@ function MOMForm() {
   // Function to generate PDF and download it
 
   const generatePDF = async () => {
-    const doc = new jsPDF();
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const pageHeight = doc.internal.pageSize.getHeight();
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
 
-    const logo = new Image();
-    logo.src = "/SQAC.jpg";
+  const logo = new Image();
+  logo.src = "/SQAC.jpg";
 
-    const bg = new Image();
-    bg.src = "/gradient-bg.png";
+  const bg = new Image();
+  bg.src = "/gradient-bg.png";
 
-    await Promise.all([
-      new Promise((resolve) => {
-        logo.onload = resolve;
-        logo.onerror = () => resolve();
-      }),
-      new Promise((resolve) => {
-        bg.onload = resolve;
-        bg.onerror = () => resolve();
-      })
-    ]);
+  await Promise.all([
+    new Promise((resolve) => {
+      logo.onload = resolve;
+      logo.onerror = () => resolve();
+    }),
+    new Promise((resolve) => {
+      bg.onload = resolve;
+      bg.onerror = () => resolve();
+    })
+  ]);
 
-    if (bg.complete) {
-      doc.addImage(bg, "PNG", 0, 0, pageWidth, pageHeight);
-    }
+  if (bg.complete) {
+    doc.addImage(bg, "PNG", 0, 0, pageWidth, pageHeight);
+  }
 
-    doc.setDrawColor(50);
-    doc.setLineWidth(0.8);
-    doc.rect(10, 10, pageWidth - 20, pageHeight - 20);
+  doc.setDrawColor(50);
+  doc.setLineWidth(0.8);
+  doc.rect(10, 10, pageWidth - 20, pageHeight - 20);
 
-    if (logo.complete) {
-      const imgWidth = 80;
-      const imgHeight = 28;
-      const imgX = (pageWidth - imgWidth) / 2;
-      doc.addImage(logo, "JPEG", imgX, 13, imgWidth, imgHeight);
-    }
+  if (logo.complete) {
+    const imgWidth = 80;
+    const imgHeight = 28;
+    const imgX = (pageWidth - imgWidth) / 2;
+    doc.addImage(logo, "JPEG", imgX, 13, imgWidth, imgHeight);
+  }
 
-    doc.setTextColor(0);
-    doc.setFontSize(20);
-    doc.setFont("helvetica", "bold");
-    doc.text("Minutes of Meeting", pageWidth / 2, 50, { align: "center" });
-    doc.setLineWidth(0.2);
-    doc.line(20, 55, pageWidth - 20, 55);
+  doc.setTextColor(0);
+  doc.setFontSize(20);
+  doc.setFont("helvetica", "bold");
+  doc.text("Minutes of Meeting", pageWidth / 2, 50, { align: "center" });
+  doc.setLineWidth(0.2);
+  doc.line(20, 55, pageWidth - 20, 55);
 
-    let y = 65;
-    doc.setFontSize(12);
+  let y = 65;
+  doc.setFontSize(12);
 
-    doc.setFont("helvetica", "bold");
-    doc.text("Date:", 20, y);
-    doc.setFont("helvetica", "normal");
-    doc.text(date, 50, y);
+  doc.setFont("helvetica", "bold");
+  doc.text("Date:", 20, y);
+  doc.setFont("helvetica", "normal");
+  doc.text(date, 50, y);
 
-    y += 10;
-    doc.setFont("helvetica", "bold");
-    doc.text("Time:", 20, y);
-    doc.setFont("helvetica", "normal");
-    doc.text(time, 50, y);
+  y += 10;
+  doc.setFont("helvetica", "bold");
+  doc.text("Time:", 20, y);
+  doc.setFont("helvetica", "normal");
+  doc.text(time, 50, y);
 
-    y += 10;
-    doc.setFont("helvetica", "bold");
-    doc.text("Mode:", 20, y);
-    doc.setFont("helvetica", "normal");
-    doc.text(mode, 50, y);
+  y += 10;
+  doc.setFont("helvetica", "bold");
+  doc.text("Mode:", 20, y);
+  doc.setFont("helvetica", "normal");
+  doc.text(mode, 50, y);
 
-    y += 10;
-    doc.setFont("helvetica", "bold");
-    doc.text("Domain:", 20, y);
-    doc.setFont("helvetica", "normal");
-    doc.text(department, 50, y);
+  y += 10;
+  doc.setFont("helvetica", "bold");
+  doc.text("Domain:", 20, y);
+  doc.setFont("helvetica", "normal");
+  doc.text(department, 50, y);
 
-    y += 20;
-    doc.setFont("helvetica", "bold");
-    doc.text("Attendees:", 20, y);
-    doc.setFont("helvetica", "normal");
-    attendees
-      .map((a) => a.name)
-      .sort()
-      .forEach((name, i) => {
-        doc.text(`• ${name}`, 25, y + 10 + i * 8);
-      });
-
-    y += attendees.length * 8 + 20;
-
-    doc.setFont("helvetica", "bold");
-    doc.text("Agenda:", 20, y);
-    y += 10;
-    doc.setFont("helvetica", "normal");
-    doc.text(agenda, 25, y);
-
-    y += 20;
-
-    doc.setFont("helvetica", "bold");
-    doc.text("Discussion Points:", 20, y);
-    y += 10;
-    doc.setFont("helvetica", "normal");
-    discussion.split("\n").forEach((point, i) => {
-      doc.text(`• ${point}`, 25, y + i * 8);
+  y += 20;
+  doc.setFont("helvetica", "bold");
+  doc.text("Attendees:", 20, y);
+  doc.setFont("helvetica", "normal");
+  attendees
+    .map((a) => a.name)
+    .sort()
+    .forEach((name, i) => {
+      doc.text(`• ${name}`, 25, y + 10 + i * 8);
     });
 
-    doc.save(`MOM_${date}.pdf`);
-  };
+  y += attendees.length * 8 + 20;
+
+  doc.setFont("helvetica", "bold");
+  doc.text("Agenda:", 20, y);
+  y += 10;
+  doc.setFont("helvetica", "normal");
+  doc.text(agenda, 25, y);
+
+  y += 20;
+
+  doc.setFont("helvetica", "bold");
+  doc.text("Discussion Points:", 20, y);
+  y += 10;
+  doc.setFont("helvetica", "normal");
+
+  const lineHeight = 8;
+  const bottomMargin = pageHeight - 30;
+
+  discussion.split("\n").forEach((point) => {
+    if (y + lineHeight > bottomMargin) {
+      doc.addPage();
+      y = 30;
+    }
+    doc.text(`• ${point}`, 25, y);
+    y += lineHeight;
+  });
+
+  doc.save(`MOM_${date}.pdf`);
+};
+
 
 
 
   const generatePDFBlob = async () => {
-    const doc = new jsPDF();
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const pageHeight = doc.internal.pageSize.getHeight();
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
 
-    const logo = new Image();
-    logo.src = "/SQAC.jpg";
+  const logo = new Image();
+  logo.src = "/SQAC.jpg";
 
-    const bg = new Image();
-    bg.src = "/gradient-bg.png";
+  const bg = new Image();
+  bg.src = "/gradient-bg.png";
 
-    await Promise.all([
-      new Promise((resolve) => {
-        logo.onload = resolve;
-        logo.onerror = () => {
-          console.warn("Logo not loaded.");
-          resolve();
-        };
-      }),
-      new Promise((resolve) => {
-        bg.onload = resolve;
-        bg.onerror = () => {
-          console.warn("Background not loaded.");
-          resolve();
-        };
-      }),
-    ]);
+  await Promise.all([
+    new Promise((resolve) => {
+      logo.onload = resolve;
+      logo.onerror = () => {
+        console.warn("Logo not loaded.");
+        resolve();
+      };
+    }),
+    new Promise((resolve) => {
+      bg.onload = resolve;
+      bg.onerror = () => {
+        console.warn("Background not loaded.");
+        resolve();
+      };
+    }),
+  ]);
 
-    if (bg.complete) {
-      doc.addImage(bg, "PNG", 0, 0, pageWidth, pageHeight, "FAST", 0.1);
-    }
+  if (bg.complete) {
+    doc.addImage(bg, "PNG", 0, 0, pageWidth, pageHeight, "FAST", 0.1);
+  }
 
-    doc.setDrawColor(50);
-    doc.setLineWidth(0.8);
-    doc.rect(10, 10, pageWidth - 20, pageHeight - 20);
+  doc.setDrawColor(50);
+  doc.setLineWidth(0.8);
+  doc.rect(10, 10, pageWidth - 20, pageHeight - 20);
 
-    if (logo.complete) {
-      const imgWidth = 80;
-      const imgHeight = 28;
-      const imgX = (pageWidth - imgWidth) / 2;
-      doc.addImage(logo, "JPEG", imgX, 13, imgWidth, imgHeight);
-    }
+  if (logo.complete) {
+    const imgWidth = 80;
+    const imgHeight = 28;
+    const imgX = (pageWidth - imgWidth) / 2;
+    doc.addImage(logo, "JPEG", imgX, 13, imgWidth, imgHeight);
+  }
 
-    doc.setTextColor(0);
-    doc.setFontSize(20);
-    doc.setFont("helvetica", "bold");
-    doc.text("Minutes of Meeting", pageWidth / 2, 50, { align: "center" });
-    doc.setLineWidth(0.2);
-    doc.line(20, 55, pageWidth - 20, 55);
+  doc.setTextColor(0);
+  doc.setFontSize(20);
+  doc.setFont("helvetica", "bold");
+  doc.text("Minutes of Meeting", pageWidth / 2, 50, { align: "center" });
+  doc.setLineWidth(0.2);
+  doc.line(20, 55, pageWidth - 20, 55);
 
-    let y = 65;
-    doc.setFontSize(12);
+  let y = 65;
+  doc.setFontSize(12);
 
-    doc.setFont("helvetica", "bold");
-    doc.text("Date:", 20, y);
-    doc.setFont("helvetica", "normal");
-    doc.text(date, 50, y);
+  doc.setFont("helvetica", "bold");
+  doc.text("Date:", 20, y);
+  doc.setFont("helvetica", "normal");
+  doc.text(date, 50, y);
 
-    y += 10;
-    doc.setFont("helvetica", "bold");
-    doc.text("Time:", 20, y);
-    doc.setFont("helvetica", "normal");
-    doc.text(time, 50, y);
+  y += 10;
+  doc.setFont("helvetica", "bold");
+  doc.text("Time:", 20, y);
+  doc.setFont("helvetica", "normal");
+  doc.text(time, 50, y);
 
-    y += 10;
-    doc.setFont("helvetica", "bold");
-    doc.text("Mode:", 20, y);
-    doc.setFont("helvetica", "normal");
-    doc.text(mode, 50, y);
+  y += 10;
+  doc.setFont("helvetica", "bold");
+  doc.text("Mode:", 20, y);
+  doc.setFont("helvetica", "normal");
+  doc.text(mode, 50, y);
 
-    y += 10;
-    doc.setFont("helvetica", "bold");
-    doc.text("Domain:", 20, y);
-    doc.setFont("helvetica", "normal");
-    doc.text(department, 50, y);
+  y += 10;
+  doc.setFont("helvetica", "bold");
+  doc.text("Domain:", 20, y);
+  doc.setFont("helvetica", "normal");
+  doc.text(department, 50, y);
 
-    y += 20;
-    doc.setFont("helvetica", "bold");
-    doc.text("Attendees:", 20, y);
-    doc.setFont("helvetica", "normal");
-    attendees
-      .map((a) => a.name)
-      .sort()
-      .forEach((name, i) => {
-        doc.text(`• ${name}`, 25, y + 10 + i * 8);
-      });
-
-    y += attendees.length * 8 + 20;
-
-    doc.setFont("helvetica", "bold");
-    doc.text("Agenda:", 20, y);
-    y += 10;
-    doc.setFont("helvetica", "normal");
-    doc.text(agenda, 25, y);
-
-    y += 20;
-
-    doc.setFont("helvetica", "bold");
-    doc.text("Discussion Points:", 20, y);
-    y += 10;
-    doc.setFont("helvetica", "normal");
-    discussion.split("\n").forEach((point, i) => {
-      doc.text(`• ${point}`, 25, y + i * 8);
+  y += 20;
+  doc.setFont("helvetica", "bold");
+  doc.text("Attendees:", 20, y);
+  doc.setFont("helvetica", "normal");
+  attendees
+    .map((a) => a.name)
+    .sort()
+    .forEach((name, i) => {
+      doc.text(`• ${name}`, 25, y + 10 + i * 8);
     });
 
-    const blob = doc.output("blob");
-    const url = URL.createObjectURL(blob);
-    setPdfPreviewUrl(url);
-    setShowPreview(true);
-  };
+  y += attendees.length * 8 + 20;
+
+  doc.setFont("helvetica", "bold");
+  doc.text("Agenda:", 20, y);
+  y += 10;
+  doc.setFont("helvetica", "normal");
+  doc.text(agenda, 25, y);
+
+  y += 20;
+
+  doc.setFont("helvetica", "bold");
+  doc.text("Discussion Points:", 20, y);
+  y += 10;
+  doc.setFont("helvetica", "normal");
+
+  const lineHeight = 8;
+  const bottomMargin = pageHeight - 30;
+
+  discussion.split("\n").forEach((point) => {
+    if (y + lineHeight > bottomMargin) {
+      doc.addPage();
+      y = 30;
+    }
+    doc.text(`• ${point}`, 25, y);
+    y += lineHeight;
+  });
+
+  const blob = doc.output("blob");
+  const url = URL.createObjectURL(blob);
+  setPdfPreviewUrl(url);
+  setShowPreview(true);
+};
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-300 via-purple-300 to-indigo-400 flex items-center justify-center py-10 relative">
