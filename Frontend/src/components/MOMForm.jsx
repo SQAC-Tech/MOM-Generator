@@ -234,6 +234,7 @@ const generatePDFBlob = async () => {
 
   doc.setFont("helvetica", "bold");
   doc.text("Attendees:", 20, y);
+   y += 10;
   doc.setFont("helvetica", "normal");
   attendees.map((a) => a.name).sort().forEach((name) => {
     if (y + lineHeight > bottomMargin) {
