@@ -15,7 +15,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors({
-  origin: 'https://mom-generator-eight.vercel.app', // Match frontend Vite URL
+  origin: ['https://mom-generator-eight.vercel.app','http://localhost:5173'], // Match frontend Vite URL
   credentials: true
 }));
 app.use(bodyParser.json());
