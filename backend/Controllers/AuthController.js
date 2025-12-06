@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 
 const signup = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     const user = await UserModel.findOne({ email });
     if (user) {
@@ -15,7 +15,13 @@ const signup = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new UserModel({ name, email, password: hashedPassword });
+    const newUser = new UserModel({ 
+      name, 
+      email, 
+      password: hashedPassword,
+      role: role || "member"
+    });
+
     await newUser.save();
 
     return res.status(201).json({
@@ -53,7 +59,7 @@ const login = async (req, res) => {
     }
 
     const jwtToken = jwt.sign(
-      { email: user.email, id: user._id },
+      { email: user.email, id: user._id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: '2h' }
     );
@@ -64,7 +70,8 @@ const login = async (req, res) => {
       token: jwtToken,
       user: {
         name: user.name,
-        email: user.email
+        email: user.email,
+        role: user.role
       }
     });
 

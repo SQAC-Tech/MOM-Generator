@@ -11,10 +11,12 @@ function Login() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        'https://mom-generator.onrender.com/auth/login',
-        { email, password },
-        { withCredentials: true }
-      );
+  (import.meta.env.MODE === "development"
+    ? "http://localhost:3000"
+    : "https://mom-generator.onrender.com") + "/auth/login",
+  { email, password },
+  { withCredentials: true }
+);
       localStorage.setItem("authToken", res.data.token);
       navigate('/dashboard'); 
     } catch (error) {

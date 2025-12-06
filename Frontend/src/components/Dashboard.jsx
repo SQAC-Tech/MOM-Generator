@@ -22,7 +22,12 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchMOMs = async () => {
       try {
-        const res = await axios.get("https://mom-generator.onrender.com/mom");
+       const res = await axios.get(
+  (import.meta.env.MODE === "development"
+    ? "http://localhost:3000"
+    : "https://mom-generator.onrender.com") + "/mom"
+);
+
         setMomList(res.data);
       } catch (err) {
         console.error("Failed to fetch MOM data:", err.message);

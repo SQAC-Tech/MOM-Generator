@@ -13,10 +13,14 @@ function Signup() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        'https://mom-generator.onrender.com/auth/signup',
-        { name, email, password },
-        { withCredentials: true }
-      );
+  (import.meta.env.MODE === "development"
+    ? "http://localhost:3000"
+    : "https://mom-generator.onrender.com") + "/auth/signup",
+  { name, email, password },
+  { withCredentials: true }
+);
+
+
           localStorage.setItem("authToken", res.data.token);
       navigate('/dashboard'); // Redirect to dashboard on successful signup
     } catch (error) {

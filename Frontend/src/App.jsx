@@ -5,6 +5,7 @@ import Signup from './components/Signup';
 import Dashboard from './components/Dashboard';
 import MOMForm from './components/MOMForm';;
 import Credits from './components/Credits';
+import AddPeople from './components/AddPeople';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard/>}/> 
         <Route path="/mom" element={<MOMForm/>} />
            <Route path="/credits" element={<Credits/>}/> 
+           <Route path="/add-people" element={<AddPeople />} />
         
       </Routes>
     </Router>
