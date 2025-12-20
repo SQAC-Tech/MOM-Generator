@@ -14,12 +14,13 @@ import PeopleRouter from './Routes/PeopleRouter.js';  // <-- NEW
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(express.json());
+
 app.use(cors({
-  origin: ['https://mom-generator-eight.vercel.app','http://localhost:5173'],
+  origin: ["http://localhost:5173","https://mom-generator-eight.vercel.app/"],
   credentials: true
 }));
 
-app.use(bodyParser.json());
 
 app.use('/auth', AuthRouter);
 app.use('/dashboard', DashboardRouter);

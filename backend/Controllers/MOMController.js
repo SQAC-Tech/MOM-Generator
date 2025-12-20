@@ -4,17 +4,17 @@ export const MOM = async (req, res) => {
   try {
     console.log("▶️ Received POST /mom data:", req.body); // Log incoming data
 
-    const { date, time, mode, agenda, department } = req.body;
+    const { date, time, mode, agenda, department , subdomain } = req.body;
 
     // Optional validation
-    if (!date || !time || !mode || !agenda || !department) {
+    if (!date || !time || !mode || !agenda || !department || !subdomain ) {
       return res.status(400).json({
         message: "All fields are required.",
         success: false,
       });
     }
 
-    const newmom = new MOMModel({ date, time, mode, agenda, department });
+    const newmom = new MOMModel({ date, time, mode, agenda, department, subdomain});
     await newmom.save();
 
     return res.status(201).json({

@@ -110,13 +110,14 @@ const Dashboard = () => {
         {/* Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {sortedData.length > 0 ? (
-            sortedData.map(({ _id, department, agenda, date, mode }) => (
+            sortedData.map(({ _id, department, agenda, date, mode, subdomain }) => (
               <div
                 key={_id}
                 className="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition duration-300"
               >
                 <h2 className="text-2xl font-semibold text-gray-800 mb-3">{department}</h2>
                 <div className="space-y-1 text-gray-700">
+                  <p><span className="font-medium">Subdomain:</span> {subdomain}</p>
                   <p><span className="font-medium">Agenda:</span> {agenda}</p>
                   <p><span className="font-medium">Date:</span> {new Date(date).toLocaleDateString()}</p>
                   <p><span className="font-medium">Mode:</span> {mode}</p>
