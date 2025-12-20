@@ -15,6 +15,7 @@ function MOMForm() {
   const [department, setDepartment] = useState(" ");
   const [pdfPreviewUrl, setPdfPreviewUrl] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
+  const [subdomain,setSubdomain] = useState("")
 
   // ⭐ NEW: People fetched from backend
   const [peopleData, setPeopleData] = useState([]);
@@ -56,7 +57,8 @@ function MOMForm() {
     discussion.trim() !== "" &&
     attendees.length > 0 &&
     department.trim() !== "" &&
-    department.trim() !== " ";
+    department.trim() !== ""&&
+    subdomain.trim() !== "";
 
   // ⭐ Submit MOM to backend
   const handleSubmit = async () => {
@@ -69,6 +71,7 @@ function MOMForm() {
         attendees: attendees.map((a) => a.name),
         discussion: discussion.trim(),
         department: department.trim(),
+        subdomain:subdomain.trim(),
       });
 
       if (res.data.success) {
@@ -83,6 +86,7 @@ function MOMForm() {
         setDiscussion("");
         setAttendees([]);
         setDepartment(" ");
+        setSubdomain("")
       } else {
         alert("Failed to submit MOM.");
       }
@@ -163,7 +167,10 @@ function MOMForm() {
 
     doc.text("Domain:", 20, y);
     doc.text(department, 50, y);
-    y += 20;
+    y += 10;
+    doc.text("Subdomain:", 20, y);
+    doc.text(subdomain, 50, y);
+    y += 10;
 
     doc.text("Attendees:", 20, y);
     y += 10;
@@ -296,6 +303,16 @@ function MOMForm() {
     setShowPreview(true);
   };
 
+
+  const getSubdomainOptions = () => {
+    if (department === "Technical") {
+      return ["Full Technical", "Web Dev", "App Dev", "AI/ML"];
+    } else if (department === "Corporate") {
+      return ["Full Corporate", "Sponsorship", "Events", "Public Relations (Media)", "Creatives (Media)"];
+    }
+    return [];
+  };
+
   // ---------------- UI ------------------------
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-300 via-purple-300 to-indigo-400 flex items-center justify-center py-10 relative">
@@ -341,7 +358,7 @@ function MOMForm() {
           </label>
           <select
             className="w-full px-4 py-2 border border-gray-300 rounded-lg cursor-pointer"
-            onChange={(e) => setDepartment(e.target.value)}
+            onChange={(e) => { setDepartment(e.target.value); setSubdomain(""); }}
             value={department}
           >
             <option value=" ">Select your Domain</option>
@@ -350,6 +367,23 @@ function MOMForm() {
             <option value="Technical">Technical</option>
           </select>
         </div>
+
+        {/* Subdomain */}
+        {(department === "Technical" || department === "Corporate") && (
+          <div className="mb-6">
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              Subdomain
+            </label>
+            <select
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg cursor-pointer"
+              onChange={(e) => setSubdomain(e.target.value)}
+              value={subdomain}
+            >
+              <option value="">Select Subdomain</option>
+              {getSubdomainOptions().map(option => <option key={option} value={option}>{option}</option>)}
+            </select>
+          </div>
+        )}
 
         {/* Date */}
         <div className="mb-6">
@@ -404,6 +438,7 @@ function MOMForm() {
             multiple
             id="attendees"
             options={peopleData}
+            
             getOptionLabel={(option) => option.name}
             value={attendees}
             onChange={(event, newValue) => setAttendees(newValue)}

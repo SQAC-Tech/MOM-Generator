@@ -17,6 +17,10 @@ const MOMSchema = new Schema({
     department: {
     type: String, // <-- ADD THIS
   },
+  subdomain:{
+    type:String,
+
+  },
 
 });
 
